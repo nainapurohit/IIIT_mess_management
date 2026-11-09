@@ -1,0 +1,2492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IIIT-BH Dining — Campus Mess &amp; Catering Portal</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #fafaf9;
+      color: #1c1917;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #f5f5f4;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #d6d3d1;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-stone-50 text-stone-900 pb-20 sm:pb-0">
+
+  <!-- ==========================================
+       TOP APPLICATION HEADER
+       ========================================== -->
+  <header id="app-header" class="bg-stone-900 text-stone-100 border-b border-stone-800 sticky top-0 z-30 shadow-md transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+      <!-- Brand Identity -->
+      <div class="flex items-center gap-3">
+        <div id="brand-badge" class="w-10 h-10 rounded-2xl bg-gradient-to-br from-orange-600 to-amber-500 flex items-center justify-center font-extrabold text-white shadow-sm shrink-0">
+          IIIT
+        </div>
+        <div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <h1 class="font-bold text-base sm:text-lg tracking-tight text-white">IIIT-BH Dining</h1>
+            <span id="portal-mode-pill" class="text-[11px] px-2.5 py-0.5 rounded-full bg-orange-500/20 text-orange-300 border border-orange-500/30 font-semibold">
+              Student Portal
+            </span>
+          </div>
+          <p class="text-xs text-stone-400 hidden sm:block">IIIT Bhubaneswar Mess &amp; Catering • Gothapatana, Bhubaneswar</p>
+        </div>
+      </div>
+
+      <!-- Right User Controls & Portal Switcher -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Student Wallet / Dues Quick Pill (Visible in Student Mode) -->
+        <div id="header-student-wallet" class="flex items-center gap-2 bg-stone-800 border border-stone-700 rounded-xl px-3 py-1.5 text-xs">
+          <div class="hidden md:block">
+            <span class="text-stone-400">Wallet:</span>
+            <strong id="header-wallet-val" class="text-amber-400 ml-0.5">₹1,450</strong>
+            <span class="text-stone-600 mx-1">|</span>
+            <span class="text-stone-400">Dues:</span>
+            <strong id="header-dues-val" class="text-rose-400 ml-0.5">₹3,200</strong>
+          </div>
+          <button type="button" id="btn-header-pay" class="px-2.5 py-1 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-lg transition">
+            Pay / Top Up
+          </button>
+        </div>
+
+        <!-- Caterer Selector Quick Pill (Visible in Caterer Mode) -->
+        <div id="header-caterer-selector" class="hidden items-center gap-2 bg-stone-800 border border-stone-700 rounded-xl px-2.5 py-1 text-xs">
+          <span class="text-stone-400 hidden md:inline">Kitchen:</span>
+          <select id="caterer-account-select" aria-label="Active Caterer Account" class="bg-transparent text-amber-300 font-semibold focus:outline-none cursor-pointer">
+            <option value="ground" class="bg-stone-900 text-white">P. Siva Prasad (Ground Floor)</option>
+            <option value="first" class="bg-stone-900 text-white">Swain Caterer (First Floor)</option>
+          </select>
+        </div>
+
+        <!-- Account / Login Modal Trigger -->
+        <button type="button" id="btn-open-auth" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 border border-stone-700 text-xs font-semibold text-stone-200 transition">
+          <span id="active-user-badge" class="truncate max-w-[130px] sm:max-w-[180px]">Aarav (B123045)</span>
+          <span class="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px]">Switch Login</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Desktop Navigation Bar (Student vs Caterer) -->
+    <nav class="bg-stone-950/80 border-t border-stone-800/80 hidden sm:block">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between py-1.5">
+        <!-- Student Desktop Tabs -->
+        <div id="student-desktop-nav" class="flex items-center gap-1 overflow-x-auto custom-scroll">
+          <button type="button" data-st-tab="home" class="st-nav-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition whitespace-nowrap bg-orange-600 text-white">
+            Today &amp; Notice Board
+          </button>
+          <button type="button" data-st-tab="menu" class="st-nav-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition whitespace-nowrap text-stone-300 hover:text-white hover:bg-stone-800">
+            Weekly Menu &amp; Nutrition
+          </button>
+          <button type="button" data-st-tab="coupons" class="st-nav-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition whitespace-nowrap text-stone-300 hover:text-white hover:bg-stone-800">
+            Coupons &amp; QR Pass
+          </button>
+          <button type="button" data-st-tab="finance" class="st-nav-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition whitespace-nowrap text-stone-300 hover:text-white hover:bg-stone-800">
+            Payments, Dues &amp; Leaves
+          </button>
+          <button type="button" data-st-tab="feedback" class="st-nav-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition whitespace-nowrap text-stone-300 hover:text-white hover:bg-stone-800">
+            Feedback &amp; Complaints
+          </button>
+        </div>
+
+        <!-- Caterer Desktop Tabs -->
+        <div id="caterer-desktop-nav" class="hidden items-center gap-1 overflow-x-auto custom-scroll">
+          <button type="button" data-cat-tab="ops" class="cat-nav-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition whitespace-nowrap bg-amber-500 text-stone-950">
+            Kitchen Ops &amp; Token Scanner
+          </button>
+          <button type="button" data-cat-tab="menu" class="cat-nav-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition whitespace-nowrap text-stone-300 hover:text-white hover:bg-stone-800">
+            Menu &amp; Nutrition Editor
+          </button>
+          <button type="button" data-cat-tab="notices" class="cat-nav-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition whitespace-nowrap text-stone-300 hover:text-white hover:bg-stone-800">
+            Special Menu &amp; Notice Board
+          </button>
+          <button type="button" data-cat-tab="leaves" class="cat-nav-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition whitespace-nowrap text-stone-300 hover:text-white hover:bg-stone-800">
+            Leaves, Refunds &amp; Dues
+          </button>
+          <button type="button" data-cat-tab="complaints" class="cat-nav-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition whitespace-nowrap text-stone-300 hover:text-white hover:bg-stone-800">
+            Complaints &amp; Reviews Desk
+          </button>
+        </div>
+
+        <div class="text-[11px] text-stone-400 hidden lg:flex items-center gap-3">
+          <span>Breakfast: 7:30–9:00 AM</span>
+          <span>•</span>
+          <span>Lunch: 12:00–2:00 PM</span>
+          <span>•</span>
+          <span>Dinner: 7:30–9:00 PM</span>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ==========================================
+       STUDENT PORTAL WORKSPACE
+       ========================================== -->
+  <main id="student-portal-root" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-5 space-y-6">
+
+    <!-- Caterer Floor Selector Strip for Students -->
+    <section class="bg-white rounded-2xl shadow-sm border border-stone-200 p-3.5 sm:p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-2.5 w-full md:w-auto">
+        <span class="text-xs font-bold uppercase tracking-wider text-stone-500">Viewing Mess Hall:</span>
+        <div class="grid grid-cols-2 sm:inline-flex rounded-xl bg-stone-100 p-1 border border-stone-200 w-full sm:w-auto">
+          <button type="button" id="st-select-ground" class="px-3 py-1.5 rounded-lg text-xs font-bold transition bg-orange-600 text-white shadow-sm">
+            Ground Floor • P. Siva Prasad
+          </button>
+          <button type="button" id="st-select-first" class="px-3 py-1.5 rounded-lg text-xs font-bold transition text-stone-600 hover:text-stone-900">
+            First Floor • Swain Caterer
+          </button>
+        </div>
+      </div>
+
+      <div id="student-caterer-meta" class="flex flex-wrap items-center gap-2 text-xs text-stone-600 w-full md:w-auto justify-between md:justify-end">
+        <!-- Populated dynamically with Caterer contact, FSSAI & rating -->
+      </div>
+    </section>
+
+    <!-- ------------------------------------------
+         STUDENT TAB 1: TODAY, NOTICE BOARD & NUTRITION TRACKER
+         ------------------------------------------ -->
+    <div id="st-view-home" class="st-view space-y-6">
+      <!-- Special Menu & Announcements Notice Board -->
+      <section class="bg-gradient-to-r from-stone-900 via-stone-800 to-stone-900 text-white rounded-2xl p-5 shadow-md border border-stone-700">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-stone-700/80">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
+            <h2 class="text-sm sm:text-base font-bold tracking-tight">Mess Notice Board &amp; Special Menu Alerts</h2>
+          </div>
+          <span class="text-xs text-amber-300 font-medium">Live Updates from Both Caterers</span>
+        </div>
+        <div id="student-notice-board" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">
+          <!-- Populated dynamically -->
+        </div>
+      </section>
+
+      <!-- Daily Nutrition & Macro Intake Tracker + Today's Meals -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left: Daily Nutritional Tracker Card -->
+        <div class="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Nutritional Information</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 font-semibold border border-emerald-200">Daily Target</span>
+            </div>
+            <h3 class="text-base font-bold text-stone-900 mt-1">Today's Calorie &amp; Macro Tracker</h3>
+            <p class="text-xs text-stone-500 mt-0.5">Tap "Mark Eaten" on any meal card to track your daily campus nutrition.</p>
+
+            <!-- Calorie Highlight -->
+            <div class="mt-4 p-4 rounded-2xl bg-stone-50 border border-stone-200 flex items-center justify-between">
+              <div>
+                <span class="text-xs text-stone-500 block">Logged Intake Today</span>
+                <p class="text-2xl font-extrabold text-stone-900"><span id="macro-total-kcal">0</span> <span class="text-sm font-semibold text-stone-500">/ 2,200 kcal</span></p>
+              </div>
+              <button type="button" id="btn-reset-macros" class="text-xs text-orange-700 hover:underline font-semibold">Reset Day</button>
+            </div>
+
+            <!-- Macro Progress Bars -->
+            <div class="space-y-3 mt-4">
+              <div>
+                <div class="flex justify-between text-xs font-semibold mb-1">
+                  <span class="text-stone-700">Protein (Muscle &amp; Recovery)</span>
+                  <span class="text-emerald-700"><span id="macro-total-protein">0</span>g / 75g</span>
+                </div>
+                <div class="w-full h-2 bg-stone-100 rounded-full overflow-hidden">
+                  <div id="bar-protein" class="h-full bg-emerald-600 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-semibold mb-1">
+                  <span class="text-stone-700">Carbohydrates (Energy)</span>
+                  <span class="text-amber-700"><span id="macro-total-carbs">0</span>g / 280g</span>
+                </div>
+                <div class="w-full h-2 bg-stone-100 rounded-full overflow-hidden">
+                  <div id="bar-carbs" class="h-full bg-amber-500 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-semibold mb-1">
+                  <span class="text-stone-700">Healthy Fats</span>
+                  <span class="text-orange-700"><span id="macro-total-fat">0</span>g / 65g</span>
+                </div>
+                <div class="w-full h-2 bg-stone-100 rounded-full overflow-hidden">
+                  <div id="bar-fat" class="h-full bg-orange-500 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-semibold mb-1">
+                  <span class="text-stone-700">Dietary Fiber</span>
+                  <span class="text-stone-700"><span id="macro-total-fiber">0</span>g / 30g</span>
+                </div>
+                <div class="w-full h-2 bg-stone-100 rounded-full overflow-hidden">
+                  <div id="bar-fiber" class="h-full bg-stone-700 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-stone-100 flex items-center justify-between text-xs text-stone-500">
+            <span>Allergens &amp; Oil Grade:</span>
+            <span class="font-semibold text-stone-800">FSSAI Fortified Rice Bran Oil</span>
+          </div>
+        </div>
+
+        <!-- Right 2 Columns: Today's Meal Cards with Full Nutrition Breakdown -->
+        <div class="lg:col-span-2 bg-white rounded-2xl border border-stone-200 p-5 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-stone-100">
+            <div>
+              <h3 class="text-base font-bold text-stone-900">Daily Meal Lineup &amp; Nutritional Facts</h3>
+              <p class="text-xs text-stone-500">Inspect calories, protein, carbs, and fat per serving before heading to the dining hall.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <label for="st-home-day-select" class="text-xs font-semibold text-stone-600">Day:</label>
+              <select id="st-home-day-select" class="bg-stone-50 border border-stone-300 text-xs font-bold rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+                <option value="Sunday">Sunday</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="st-today-meals-grid" class="grid grid-cols-1 gap-4">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ------------------------------------------
+         STUDENT TAB 2: WEEKLY MENU & NUTRITION EXPLORER
+         ------------------------------------------ -->
+    <div id="st-view-menu" class="st-view hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-stone-200 shadow-sm p-5 space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-base font-bold text-stone-900">7-Day Mess Menu &amp; Nutritional Directory</h2>
+            <p class="text-xs text-stone-500">Compare Ground Floor (P. Siva Prasad Caterer) and First Floor (Swain Caterer) menus with per-meal macro tags.</p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <input type="text" id="st-menu-search" placeholder="Search dish (e.g. Biryani, Dahi Bara, Paneer)..." class="bg-stone-50 border border-stone-300 rounded-xl px-3 py-1.5 text-xs w-full sm:w-60 focus:outline-none focus:ring-2 focus:ring-orange-500" />
+            <select id="st-menu-diet" aria-label="Dietary Filter" class="bg-stone-50 border border-stone-300 rounded-xl px-3 py-1.5 text-xs font-semibold">
+              <option value="all">All Meals (Veg &amp; Non-Veg)</option>
+              <option value="veg">Pure Vegetarian View</option>
+              <option value="highprotein">High Protein (&ge;22g Protein/Meal)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto custom-scroll border border-stone-200 rounded-2xl">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-stone-900 text-stone-100">
+                <th class="py-3.5 px-4 font-bold w-28">Day</th>
+                <th class="py-3.5 px-4 font-bold">Breakfast (7:30 – 9:00 AM)</th>
+                <th class="py-3.5 px-4 font-bold">Lunch (12:00 – 2:00 PM)</th>
+                <th class="py-3.5 px-4 font-bold">Dinner (7:30 – 9:00 PM)</th>
+                <th class="py-3.5 px-4 font-bold text-right w-32">Daily Nutrition</th>
+              </tr>
+            </thead>
+            <tbody id="st-menu-table-body" class="divide-y divide-stone-200 bg-white">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ------------------------------------------
+         STUDENT TAB 3: COUPONS SYSTEM & DIGITAL QR PASS
+         ------------------------------------------ -->
+    <div id="st-view-coupons" class="st-view hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left 2 Cols: Weekly & Instant Meal Coupon Selector -->
+        <div class="lg:col-span-2 bg-white rounded-2xl border border-stone-200 shadow-sm p-5 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-100 pb-3">
+            <div>
+              <h2 class="text-base font-bold text-stone-900">Purchase Weekly or Custom Mess Coupons</h2>
+              <p class="text-xs text-stone-500">Select the meals you want for the week. Pay instantly from your Mess Wallet or add to your Semester Dues.</p>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-200">
+              B: ₹35 • L: ₹55 • D: ₹55
+            </span>
+          </div>
+
+          <form id="st-coupon-form" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label for="cpn-caterer" class="block text-xs font-semibold text-stone-700 mb-1">Mess Caterer</label>
+                <select id="cpn-caterer" class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs font-semibold">
+                  <option value="ground">P. Siva Prasad (Ground Floor)</option>
+                  <option value="first">Swain Caterer (First Floor)</option>
+                </select>
+              </div>
+              <div>
+                <label for="cpn-diet" class="block text-xs font-semibold text-stone-700 mb-1">Dietary Preference</label>
+                <select id="cpn-diet" class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs font-semibold">
+                  <option value="Non-Vegetarian">Non-Vegetarian (Egg/Chicken/Fish)</option>
+                  <option value="Pure Vegetarian">Pure Vegetarian (Paneer/Mushroom)</option>
+                </select>
+              </div>
+              <div>
+                <label for="cpn-payment-mode" class="block text-xs font-semibold text-stone-700 mb-1">Payment Method</label>
+                <select id="cpn-payment-mode" class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs font-semibold">
+                  <option value="wallet">Deduct from Mess Wallet</option>
+                  <option value="dues">Add to Semester Mess Dues</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Quick Presets -->
+            <div class="flex flex-wrap items-center justify-between gap-2 bg-stone-50 p-2.5 rounded-xl border border-stone-200">
+              <span class="text-xs font-semibold text-stone-700">Quick Selection Presets:</span>
+              <div class="flex flex-wrap gap-1.5">
+                <button type="button" id="preset-all-21" class="px-2.5 py-1 rounded-lg bg-stone-900 text-white text-xs font-semibold hover:bg-stone-800">All 21 Meals (₹1,015)</button>
+                <button type="button" id="preset-weekdays" class="px-2.5 py-1 rounded-lg bg-white border border-stone-300 text-stone-700 text-xs font-semibold hover:bg-stone-100">Weekdays (15 Meals)</button>
+                <button type="button" id="preset-lunch-dinner" class="px-2.5 py-1 rounded-lg bg-white border border-stone-300 text-stone-700 text-xs font-semibold hover:bg-stone-100">Lunch + Dinner Only</button>
+              </div>
+            </div>
+
+            <!-- 7-Day Checkbox Matrix -->
+            <div class="overflow-x-auto border border-stone-200 rounded-xl">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-stone-100 text-stone-700">
+                  <tr>
+                    <th class="py-2.5 px-3 font-bold">Day</th>
+                    <th class="py-2.5 px-3 text-center font-bold">Breakfast (₹35)</th>
+                    <th class="py-2.5 px-3 text-center font-bold">Lunch (₹55)</th>
+                    <th class="py-2.5 px-3 text-center font-bold">Dinner (₹55)</th>
+                  </tr>
+                </thead>
+                <tbody id="st-coupon-matrix" class="divide-y divide-stone-200">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-2 border-t border-stone-100">
+              <div>
+                <span class="text-xs text-stone-500">Selected: <strong id="cpn-selected-count" class="text-stone-900">21</strong> meals</span>
+                <p class="text-lg font-extrabold text-stone-900">Coupon Pack Total: ₹<span id="cpn-selected-cost">1015</span></p>
+              </div>
+              <button type="submit" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs shadow-sm transition">
+                Generate Digital Mess Coupon Pass
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right Col: Active QR Coupon Pass & Wallet History -->
+        <div class="space-y-4">
+          <div class="bg-stone-900 text-white rounded-2xl p-5 shadow-md border border-stone-800 space-y-4">
+            <div class="flex items-center justify-between border-b border-stone-800 pb-3">
+              <div>
+                <span class="text-[10px] uppercase tracking-widest text-amber-400 font-bold">IIIT-BH Digital Dining Pass</span>
+                <h3 class="text-sm font-bold mt-0.5" id="qr-caterer-name">P. Siva Prasad Caterer</h3>
+              </div>
+              <span id="qr-token-id" class="text-xs font-mono bg-stone-800 px-2.5 py-1 rounded-lg text-emerald-400 font-bold border border-stone-700">CPN-8841</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5 text-xs">
+              <div>
+                <span class="text-stone-400 block text-[11px]">Student</span>
+                <strong id="qr-student-name">Aarav Mohanty (B123045)</strong>
+              </div>
+              <div>
+                <span class="text-stone-400 block text-[11px]">Dietary Plan</span>
+                <strong id="qr-diet-type" class="text-amber-300">Non-Vegetarian</strong>
+              </div>
+              <div>
+                <span class="text-stone-400 block text-[11px]">Meals Balance</span>
+                <strong id="qr-meal-count">21 Meals Active</strong>
+              </div>
+              <div>
+                <span class="text-stone-400 block text-[11px]">Status</span>
+                <strong id="qr-status-badge" class="text-emerald-400">Verified &amp; Active</strong>
+              </div>
+            </div>
+
+            <div class="bg-white text-stone-900 p-3.5 rounded-xl flex items-center justify-between gap-3">
+              <div class="space-y-1">
+                <span class="text-[10px] font-extrabold uppercase tracking-wider text-orange-700">Dining Counter QR</span>
+                <p class="text-xs font-bold">Show at Ground / First Floor Mess</p>
+                <p class="text-[11px] text-stone-500" id="qr-issued-time">Issued: Nov 2026</p>
+              </div>
+              <svg class="w-16 h-16 text-stone-900 shrink-0" viewBox="0 0 64 64" fill="currentColor" aria-label="Mess Verification QR">
+                <rect x="4" y="4" width="18" height="18" fill="none" stroke="currentColor" stroke-width="4"/>
+                <rect x="10" y="10" width="6" height="6"/>
+                <rect x="42" y="4" width="18" height="18" fill="none" stroke="currentColor" stroke-width="4"/>
+                <rect x="48" y="10" width="6" height="6"/>
+                <rect x="4" y="42" width="18" height="18" fill="none" stroke="currentColor" stroke-width="4"/>
+                <rect x="10" y="48" width="6" height="6"/>
+                <rect x="28" y="8" width="6" height="6"/>
+                <rect x="28" y="20" width="6" height="12"/>
+                <rect x="8" y="28" width="12" height="6"/>
+                <rect x="26" y="36" width="12" height="6"/>
+                <rect x="44" y="28" width="14" height="6"/>
+                <rect x="42" y="42" width="8" height="8"/>
+                <rect x="52" y="50" width="8" height="10"/>
+                <rect x="28" y="48" width="8" height="12"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-stone-200 p-4 shadow-sm space-y-3">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-stone-500">Your Purchased Coupon Packs</h4>
+            <div id="st-coupon-list" class="space-y-2 max-h-60 overflow-y-auto custom-scroll">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ------------------------------------------
+         STUDENT TAB 4: PAYMENTS, DUES, LEAVES & REFUNDS
+         ------------------------------------------ -->
+    <div id="st-view-finance" class="st-view hidden space-y-6">
+      <!-- Financial Summary Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white rounded-2xl p-5 border border-stone-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-semibold text-stone-500">Prepaid Mess Wallet Balance</span>
+            <p class="text-2xl font-extrabold text-emerald-700 mt-1" id="fin-wallet-balance">₹1,450</p>
+            <p class="text-xs text-stone-500 mt-1">Used for instant weekly coupons &amp; extra items</p>
+          </div>
+          <button type="button" id="btn-fin-topup" class="mt-4 w-full py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs transition">
+            + Add Money to Wallet
+          </button>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-stone-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-stone-500">Outstanding Mess Dues</span>
+              <span id="fin-dues-status" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">Due Nov 25</span>
+            </div>
+            <p class="text-2xl font-extrabold text-rose-600 mt-1" id="fin-dues-amount">₹3,200</p>
+            <p class="text-xs text-stone-500 mt-1">Postpaid monthly billing &amp; coupon dues</p>
+          </div>
+          <button type="button" id="btn-fin-pay-dues" class="mt-4 w-full py-2 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs transition">
+            Clear Pending Mess Dues
+          </button>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-stone-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-semibold text-stone-500">Approved Leave Refunds</span>
+            <p class="text-2xl font-extrabold text-amber-700 mt-1" id="fin-refunds-total">₹460</p>
+            <p class="text-xs text-stone-500 mt-1">Credited directly to your wallet upon approval</p>
+          </div>
+          <div class="mt-4 py-2 px-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-semibold text-center">
+            Rebate Rate: ₹115 / Leave Day (Min 3 Days)
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Leave & Refund Application Form -->
+        <div class="bg-white rounded-2xl border border-stone-200 shadow-sm p-5 space-y-4">
+          <div>
+            <h3 class="text-base font-bold text-stone-900">Apply for Mess Leave &amp; Refund</h3>
+            <p class="text-xs text-stone-500">Going home or attending an off-campus event for 3+ days? Apply here to claim ₹115/day mess refund.</p>
+          </div>
+
+          <form id="st-leave-form" class="space-y-3">
+            <div>
+              <label for="leave-caterer" class="block text-xs font-semibold text-stone-700 mb-1">Mess Caterer</label>
+              <select id="leave-caterer" class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs font-semibold">
+                <option value="P. Siva Prasad Caterer (Ground Floor)">P. Siva Prasad Caterer (Ground Floor)</option>
+                <option value="Swain Caterer (First Floor)">Swain Caterer (First Floor)</option>
+              </select>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="leave-start" class="block text-xs font-semibold text-stone-700 mb-1">Start Date</label>
+                <input type="date" id="leave-start" value="2026-11-14" required class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs" />
+              </div>
+              <div>
+                <label for="leave-end" class="block text-xs font-semibold text-stone-700 mb-1">End Date</label>
+                <input type="date" id="leave-end" value="2026-11-18" required class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs" />
+              </div>
+            </div>
+            <div>
+              <label for="leave-reason" class="block text-xs font-semibold text-stone-700 mb-1">Reason for Absence</label>
+              <input type="text" id="leave-reason" value="Family Function in Cuttack" required class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs" placeholder="e.g. Medical Leave, Home Visit, Hackathon" />
+            </div>
+            <button type="submit" class="w-full py-2.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs transition">
+              Submit Leave &amp; Refund Claim
+            </button>
+          </form>
+        </div>
+
+        <!-- Leave Status & Payment Ledger -->
+        <div class="lg:col-span-2 bg-white rounded-2xl border border-stone-200 shadow-sm p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+            <div>
+              <h3 class="text-base font-bold text-stone-900">Your Leave Refunds &amp; Payment History</h3>
+              <p class="text-xs text-stone-500">Track pending refund requests and past wallet/dues transactions.</p>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto border border-stone-200 rounded-xl">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-stone-100 text-stone-700">
+                <tr>
+                  <th class="py-2.5 px-3 font-bold">Ref ID</th>
+                  <th class="py-2.5 px-3 font-bold">Caterer &amp; Reason</th>
+                  <th class="py-2.5 px-3 font-bold">Leave Dates</th>
+                  <th class="py-2.5 px-3 font-bold">Refund Amt</th>
+                  <th class="py-2.5 px-3 font-bold text-right">Status</th>
+                </tr>
+              </thead>
+              <tbody id="st-leave-table-body" class="divide-y divide-stone-200">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Recent Transactions -->
+          <div>
+            <h4 class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">Recent Payment &amp; Refund Ledger</h4>
+            <div id="st-transactions-list" class="space-y-2 max-h-44 overflow-y-auto custom-scroll">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ------------------------------------------
+         STUDENT TAB 5: FEEDBACK & COMPLAINTS DESK
+         ------------------------------------------ -->
+    <div id="st-view-feedback" class="st-view hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Submit Rating or Complaint Form -->
+        <div class="bg-white rounded-2xl border border-stone-200 shadow-sm p-5 space-y-4">
+          <div>
+            <h2 class="text-base font-bold text-stone-900">Submit Feedback or Raise a Complaint</h2>
+            <p class="text-xs text-stone-500">Directly reaches the selected Caterer Manager and the IIIT-BH Mess Monitoring Committee.</p>
+          </div>
+
+          <form id="st-feedback-form" class="space-y-3">
+            <div>
+              <label for="fb-type" class="block text-xs font-semibold text-stone-700 mb-1">Submission Type</label>
+              <select id="fb-type" class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs font-bold">
+                <option value="Complaint">Formal Complaint Ticket (Needs Resolution)</option>
+                <option value="Feedback">Meal Quality &amp; Hygiene Rating</option>
+              </select>
+            </div>
+            <div>
+              <label for="fb-caterer-select" class="block text-xs font-semibold text-stone-700 mb-1">Mess Hall / Caterer</label>
+              <select id="fb-caterer-select" class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs font-semibold">
+                <option value="P. Siva Prasad Caterer (Ground Floor)">P. Siva Prasad Caterer (Ground Floor)</option>
+                <option value="Swain Caterer (First Floor)">Swain Caterer (First Floor)</option>
+              </select>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="fb-category" class="block text-xs font-semibold text-stone-700 mb-1">Category</label>
+                <select id="fb-category" class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs">
+                  <option value="Food Quality &amp; Taste">Food Quality &amp; Taste</option>
+                  <option value="Hygiene &amp; Cleanliness">Hygiene &amp; Cleanliness</option>
+                  <option value="Chapati / Rice Freshness">Chapati / Rice Freshness</option>
+                  <option value="Billing &amp; Coupon Issue">Billing &amp; Coupon Issue</option>
+                </select>
+              </div>
+              <div>
+                <label for="fb-rating-select" class="block text-xs font-semibold text-stone-700 mb-1">Rating (1–5 ★)</label>
+                <select id="fb-rating-select" class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs font-bold text-amber-600">
+                  <option value="5">5 ★ — Excellent</option>
+                  <option value="4">4 ★ — Good</option>
+                  <option value="3">3 ★ — Average</option>
+                  <option value="2" selected>2 ★ — Below Par</option>
+                  <option value="1">1 ★ — Poor / Urgent</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label for="fb-message" class="block text-xs font-semibold text-stone-700 mb-1">Details / Description</label>
+              <textarea id="fb-message" rows="3" required class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs" placeholder="Describe the issue or feedback clearly...">Rotis served at 8:30 PM dinner batch were cold; please keep hot-cases refilled till 9:00 PM.</textarea>
+            </div>
+            <button type="submit" class="w-full py-2.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs transition">
+              Submit to Caterer &amp; Mess Committee
+            </button>
+          </form>
+        </div>
+
+        <!-- Complaints & Feedback Tracker List -->
+        <div class="lg:col-span-2 bg-white rounded-2xl border border-stone-200 shadow-sm p-5 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-100 pb-3">
+            <div>
+              <h3 class="text-base font-bold text-stone-900">Live Complaints &amp; Feedback Resolution Board</h3>
+              <p class="text-xs text-stone-500">Transparent tracking of student complaints, hygiene ratings, and official caterer responses.</p>
+            </div>
+            <select id="st-fb-filter" aria-label="Filter Complaints" class="bg-stone-50 border border-stone-300 rounded-xl px-3 py-1.5 text-xs font-semibold">
+              <option value="all">All Submissions</option>
+              <option value="Complaint">Complaints Only</option>
+              <option value="Feedback">General Feedback</option>
+            </select>
+          </div>
+
+          <div id="st-feedback-stream" class="space-y-3 max-h-[460px] overflow-y-auto custom-scroll pr-1">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ==========================================
+       CATERER / MESS MANAGER PORTAL WORKSPACE
+       ========================================== -->
+  <main id="caterer-portal-root" class="hidden flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-5 space-y-6">
+
+    <!-- Caterer Identity & Default Info Banner -->
+    <section class="bg-stone-900 text-white rounded-2xl p-5 shadow-md border border-stone-800 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-500 text-stone-950" id="cat-banner-floor">Ground Floor Mess</span>
+          <span class="text-xs text-stone-400 font-mono" id="cat-banner-fssai">FSSAI Lic: 22024011000412</span>
+        </div>
+        <h2 class="text-lg sm:text-xl font-extrabold text-white" id="cat-banner-name">P. Siva Prasad Caterer — Management Console</h2>
+        <p class="text-xs text-stone-300" id="cat-banner-meta">Proprietor: P. Siva Prasad • Contact: 9078210647 • Specialty: South Indian &amp; Odia Authentics</p>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full lg:w-auto">
+        <div class="bg-stone-800/90 border border-stone-700 rounded-xl px-3.5 py-2">
+          <span class="text-[11px] text-stone-400 block">Registered Students</span>
+          <strong class="text-sm sm:text-base text-white" id="cat-kpi-subscribers">640</strong>
+        </div>
+        <div class="bg-stone-800/90 border border-stone-700 rounded-xl px-3.5 py-2">
+          <span class="text-[11px] text-stone-400 block">Expected Next Meal</span>
+          <strong class="text-sm sm:text-base text-amber-400" id="cat-kpi-headcount">425 Plates</strong>
+        </div>
+        <div class="bg-stone-800/90 border border-stone-700 rounded-xl px-3.5 py-2">
+          <span class="text-[11px] text-stone-400 block">Pending Leaves</span>
+          <strong class="text-sm sm:text-base text-orange-400" id="cat-kpi-leaves">1 Claim</strong>
+        </div>
+        <div class="bg-stone-800/90 border border-stone-700 rounded-xl px-3.5 py-2">
+          <span class="text-[11px] text-stone-400 block">Open Complaints</span>
+          <strong class="text-sm sm:text-base text-rose-400" id="cat-kpi-complaints">1 Open</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------
+         CATERER TAB 1: KITCHEN OPS & TOKEN SCANNER
+         ------------------------------------------ -->
+    <div id="cat-view-ops" class="cat-view space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Digital Coupon Token Scanner / Verifier -->
+        <div class="bg-white rounded-2xl border border-stone-200 shadow-sm p-5 space-y-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-orange-700">Dining Counter Tool</span>
+            <h3 class="text-base font-bold text-stone-900 mt-0.5">Verify &amp; Redeem Student Coupon</h3>
+            <p class="text-xs text-stone-500">Enter a student's Coupon ID (e.g. <code class="font-mono bg-stone-100 px-1 rounded">CPN-8841</code>) to verify validity and log meal attendance.</p>
+          </div>
+
+          <form id="cat-scanner-form" class="flex gap-2">
+            <input type="text" id="cat-scan-input" value="CPN-8841" required placeholder="Enter Token (e.g. CPN-8841)" class="flex-1 bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs font-mono font-bold uppercase" />
+            <button type="submit" class="px-4 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-bold transition">
+              Verify &amp; Punch
+            </button>
+          </form>
+
+          <div id="cat-scan-result" class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-xs space-y-1">
+            <div class="flex items-center justify-between font-bold text-emerald-900">
+              <span>Ready to Scan Counter Tokens</span>
+              <span>Active</span>
+            </div>
+            <p class="text-emerald-800">Punching a token decrements 1 meal from the student's weekly pass and increments kitchen plate count.</p>
+          </div>
+
+          <div class="pt-2 border-t border-stone-100 space-y-2">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-stone-500">Today's Kitchen Preparation Split</h4>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div class="p-3 rounded-xl bg-stone-50 border border-stone-200">
+                <span class="text-stone-500 block">Non-Veg Trays</span>
+                <strong class="text-base text-stone-900" id="cat-prep-nonveg">280 Plates (66%)</strong>
+              </div>
+              <div class="p-3 rounded-xl bg-stone-50 border border-stone-200">
+                <span class="text-stone-500 block">Pure Veg Trays</span>
+                <strong class="text-base text-emerald-700" id="cat-prep-veg">145 Plates (34%)</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts: Weekly Plate Demand & Quality Scores -->
+        <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white rounded-2xl border border-stone-200 shadow-sm p-5">
+            <h3 class="text-sm font-bold text-stone-900">Weekly Plate Turnout (Mon–Sun)</h3>
+            <p class="text-xs text-stone-500 mb-3">Ground Floor vs. First Floor Mess Comparison</p>
+            <div class="relative h-64">
+              <canvas id="catAttendanceChart"></canvas>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-stone-200 shadow-sm p-5">
+            <h3 class="text-sm font-bold text-stone-900">Student Quality Scorecard</h3>
+            <p class="text-xs text-stone-500 mb-3">Taste, Hygiene &amp; Freshness Audit</p>
+            <div class="relative h-64">
+              <canvas id="catQualityChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ------------------------------------------
+         CATERER TAB 2: MENU & NUTRITION EDITOR
+         ------------------------------------------ -->
+    <div id="cat-view-menu" class="cat-view hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-stone-200 shadow-sm p-5 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-100 pb-3">
+          <div>
+            <h3 class="text-base font-bold text-stone-900">Manage Weekly Menu &amp; Nutritional Information</h3>
+            <p class="text-xs text-stone-500">Click "Edit Day &amp; Nutrition" on any row to update dishes and calorie/protein macros for your mess hall.</p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto border border-stone-200 rounded-2xl">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-stone-900 text-white">
+              <tr>
+                <th class="py-3 px-4 font-bold w-28">Day</th>
+                <th class="py-3 px-4 font-bold">Breakfast &amp; Macros</th>
+                <th class="py-3 px-4 font-bold">Lunch &amp; Macros</th>
+                <th class="py-3 px-4 font-bold">Dinner &amp; Macros</th>
+                <th class="py-3 px-4 font-bold text-right w-32">Action</th>
+              </tr>
+            </thead>
+            <tbody id="cat-menu-editor-body" class="divide-y divide-stone-200">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ------------------------------------------
+         CATERER TAB 3: SPECIAL MENU & NOTICE BOARD PUBLISHER
+         ------------------------------------------ -->
+    <div id="cat-view-notices" class="cat-view hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="bg-white rounded-2xl border border-stone-200 shadow-sm p-5 space-y-4">
+          <div>
+            <h3 class="text-base font-bold text-stone-900">Publish Special Menu or Notice</h3>
+            <p class="text-xs text-stone-500">Announcements posted here appear immediately at the top of the Student Portal Notice Board.</p>
+          </div>
+
+          <form id="cat-notice-form" class="space-y-3">
+            <div>
+              <label for="notice-tag" class="block text-xs font-semibold text-stone-700 mb-1">Notice Category</label>
+              <select id="notice-tag" class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs font-bold">
+                <option value="Special Menu">Special Feast / Menu Addition</option>
+                <option value="Timing Update">Dining Timing Update</option>
+                <option value="Hygiene Audit">Kitchen Hygiene &amp; Oil Report</option>
+              </select>
+            </div>
+            <div>
+              <label for="notice-title" class="block text-xs font-semibold text-stone-700 mb-1">Headline</label>
+              <input type="text" id="notice-title" value="Friday Night Special: Odia Handi Mutton &amp; Paneer Butter Masala" required class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs font-semibold" />
+            </div>
+            <div>
+              <label for="notice-body" class="block text-xs font-semibold text-stone-700 mb-1">Announcement Details</label>
+              <textarea id="notice-body" rows="3" required class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs">Special counter opens at 7:30 PM this Friday with hot Gulab Jamun and extra raita included for all weekly pass holders.</textarea>
+            </div>
+            <button type="submit" class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-extrabold text-xs transition">
+              Broadcast to Student Notice Board
+            </button>
+          </form>
+        </div>
+
+        <div class="lg:col-span-2 bg-white rounded-2xl border border-stone-200 shadow-sm p-5 space-y-4">
+          <h3 class="text-base font-bold text-stone-900">Active Campus Notices</h3>
+          <div id="cat-notices-list" class="space-y-3">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ------------------------------------------
+         CATERER TAB 4: LEAVES, REFUNDS & DUES MANAGEMENT
+         ------------------------------------------ -->
+    <div id="cat-view-leaves" class="cat-view hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-stone-200 shadow-sm p-5 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-100 pb-3">
+          <div>
+            <h3 class="text-base font-bold text-stone-900">Student Leave Applications &amp; Rebate Approvals</h3>
+            <p class="text-xs text-stone-500">Approving a leave request automatically refunds ₹115/day to the student's Mess Wallet and adjusts kitchen headcount.</p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto border border-stone-200 rounded-xl">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-stone-100 text-stone-700">
+              <tr>
+                <th class="py-3 px-4 font-bold">Claim ID &amp; Student</th>
+                <th class="py-3 px-4 font-bold">Caterer Floor</th>
+                <th class="py-3 px-4 font-bold">Leave Window &amp; Reason</th>
+                <th class="py-3 px-4 font-bold">Refund Amount</th>
+                <th class="py-3 px-4 font-bold">Status</th>
+                <th class="py-3 px-4 font-bold text-right">Caterer Decision</th>
+              </tr>
+            </thead>
+            <tbody id="cat-leaves-table-body" class="divide-y divide-stone-200">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ------------------------------------------
+         CATERER TAB 5: COMPLAINTS & FEEDBACK RESOLUTION DESK
+         ------------------------------------------ -->
+    <div id="cat-view-complaints" class="cat-view hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-stone-200 shadow-sm p-5 space-y-4">
+        <div>
+          <h3 class="text-base font-bold text-stone-900">Student Complaints &amp; Quality Resolution Desk</h3>
+          <p class="text-xs text-stone-500">Post an official response and mark open student tickets as Resolved.</p>
+        </div>
+
+        <div id="cat-complaints-list" class="space-y-3">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ==========================================
+       MOBILE BOTTOM NAVIGATION BAR (Mobile-First)
+       ========================================== -->
+  <nav class="sm:hidden fixed bottom-0 inset-x-0 bg-stone-900 text-stone-300 border-t border-stone-800 z-40">
+    <!-- Student Mobile Nav -->
+    <div id="student-mobile-nav" class="grid grid-cols-5 py-1.5 px-1 text-[10px] font-semibold">
+      <button type="button" data-st-tab="home" class="st-nav-btn flex flex-col items-center py-1 rounded-lg text-orange-400">
+        <span>Today</span>
+      </button>
+      <button type="button" data-st-tab="menu" class="st-nav-btn flex flex-col items-center py-1 rounded-lg text-stone-400">
+        <span>Menu</span>
+      </button>
+      <button type="button" data-st-tab="coupons" class="st-nav-btn flex flex-col items-center py-1 rounded-lg text-stone-400">
+        <span>Coupons</span>
+      </button>
+      <button type="button" data-st-tab="finance" class="st-nav-btn flex flex-col items-center py-1 rounded-lg text-stone-400">
+        <span>Dues/Leave</span>
+      </button>
+      <button type="button" data-st-tab="feedback" class="st-nav-btn flex flex-col items-center py-1 rounded-lg text-stone-400">
+        <span>Complaints</span>
+      </button>
+    </div>
+
+    <!-- Caterer Mobile Nav -->
+    <div id="caterer-mobile-nav" class="hidden grid-cols-5 py-1.5 px-1 text-[10px] font-semibold">
+      <button type="button" data-cat-tab="ops" class="cat-nav-btn flex flex-col items-center py-1 rounded-lg text-amber-400">
+        <span>Kitchen</span>
+      </button>
+      <button type="button" data-cat-tab="menu" class="cat-nav-btn flex flex-col items-center py-1 rounded-lg text-stone-400">
+        <span>Menu Edit</span>
+      </button>
+      <button type="button" data-cat-tab="notices" class="cat-nav-btn flex flex-col items-center py-1 rounded-lg text-stone-400">
+        <span>Notices</span>
+      </button>
+      <button type="button" data-cat-tab="leaves" class="cat-nav-btn flex flex-col items-center py-1 rounded-lg text-stone-400">
+        <span>Refunds</span>
+      </button>
+      <button type="button" data-cat-tab="complaints" class="cat-nav-btn flex flex-col items-center py-1 rounded-lg text-stone-400">
+        <span>Tickets</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ==========================================
+       MODAL 1: DUAL LOGIN / SWITCH ACCOUNT GATE
+       ========================================== -->
+  <div id="modal-auth" class="fixed inset-0 bg-stone-950/70 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-stone-200 space-y-5">
+      <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+        <div>
+          <span class="text-[11px] font-extrabold uppercase tracking-wider text-orange-600">IIIT Bhubaneswar Mess Authentication</span>
+          <h3 class="text-lg font-extrabold text-stone-900">Sign In to IIIT-BH Dining</h3>
+        </div>
+        <button type="button" id="btn-close-auth" class="text-stone-400 hover:text-stone-700 text-xs font-bold px-2.5 py-1 rounded-lg bg-stone-100">Close</button>
+      </div>
+
+      <!-- Role Selector Tabs inside Login Modal -->
+      <div class="grid grid-cols-2 gap-2 p-1 bg-stone-100 rounded-2xl border border-stone-200">
+        <button type="button" id="auth-tab-student" class="py-2 rounded-xl text-xs font-bold bg-orange-600 text-white shadow-sm transition">
+          Student Login
+        </button>
+        <button type="button" id="auth-tab-caterer" class="py-2 rounded-xl text-xs font-bold text-stone-600 hover:text-stone-900 transition">
+          Caterer / Mess Manager Login
+        </button>
+      </div>
+
+      <!-- Student Login Form -->
+      <form id="form-login-student" class="space-y-3">
+        <div>
+          <label for="login-student-preset" class="block text-xs font-semibold text-stone-700 mb-1">Select Registered Student Account</label>
+          <select id="login-student-preset" class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs font-semibold">
+            <option value="B123045|Aarav Mohanty|Hostel-1, Floor 4, Room 412">B123045 — Aarav Mohanty (Hostel-1, Room 412)</option>
+            <option value="B123082|Ananya Das|Hostel-2, Floor 6, Room 608">B123082 — Ananya Das (Hostel-2, Room 608)</option>
+            <option value="B123018|Subham Panda|Hostel-1, Floor 2, Room 205">B123018 — Subham Panda (Hostel-1, Room 205)</option>
+          </select>
+        </div>
+        <div>
+          <label for="login-student-pass" class="block text-xs font-semibold text-stone-700 mb-1">Campus PIN / Password</label>
+          <input type="password" id="login-student-pass" value="iiitbh2026" required class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs" />
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs shadow-sm transition">
+          Enter Student Dining Portal
+        </button>
+      </form>
+
+      <!-- Caterer Login Form -->
+      <form id="form-login-caterer" class="hidden space-y-3">
+        <div>
+          <label for="login-caterer-vendor" class="block text-xs font-semibold text-stone-700 mb-1">Select Operating IIIT-BH Mess Vendor</label>
+          <select id="login-caterer-vendor" class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs font-semibold">
+            <option value="ground">Ground Floor Mess — P. Siva Prasad Caterer (9078210647)</option>
+            <option value="first">First Floor Mess — Swain Caterer (7787050616)</option>
+          </select>
+        </div>
+        <div>
+          <label for="login-caterer-pass" class="block text-xs font-semibold text-stone-700 mb-1">Vendor Access Key</label>
+          <input type="password" id="login-caterer-pass" value="caterer2026" required class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs" />
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-amber-400 font-bold text-xs shadow-sm transition">
+          Open Caterer Kitchen &amp; Admin Console
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL 2: CATERER MENU & NUTRITION EDITOR
+       ========================================== -->
+  <div id="modal-edit-menu" class="fixed inset-0 bg-stone-950/70 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-5 shadow-2xl border border-stone-200 space-y-4 max-h-[90vh] overflow-y-auto custom-scroll">
+      <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+        <h3 class="text-sm font-extrabold text-stone-900" id="edit-modal-title">Edit Menu &amp; Macros</h3>
+        <button type="button" id="btn-close-edit-modal" class="text-stone-400 hover:text-stone-700 text-xs font-bold">Close</button>
+      </div>
+      <form id="form-edit-menu" class="space-y-3 text-xs">
+        <input type="hidden" id="edit-menu-day" />
+        <div class="p-3 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
+          <label for="edit-bf-items" class="block font-bold text-stone-800">Breakfast Items (7:30 AM – 9:00 AM)</label>
+          <input type="text" id="edit-bf-items" required class="w-full bg-white border border-stone-300 rounded-lg px-2.5 py-1.5" />
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label for="edit-bf-kcal" class="text-[11px] text-stone-500">Calories (kcal)</label>
+              <input type="number" id="edit-bf-kcal" required class="w-full bg-white border border-stone-300 rounded-lg px-2 py-1" />
+            </div>
+            <div>
+              <label for="edit-bf-protein" class="text-[11px] text-stone-500">Protein (g)</label>
+              <input type="number" id="edit-bf-protein" required class="w-full bg-white border border-stone-300 rounded-lg px-2 py-1" />
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
+          <label for="edit-lu-items" class="block font-bold text-stone-800">Lunch Items (12:00 PM – 2:00 PM)</label>
+          <input type="text" id="edit-lu-items" required class="w-full bg-white border border-stone-300 rounded-lg px-2.5 py-1.5" />
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label for="edit-lu-kcal" class="text-[11px] text-stone-500">Calories (kcal)</label>
+              <input type="number" id="edit-lu-kcal" required class="w-full bg-white border border-stone-300 rounded-lg px-2 py-1" />
+            </div>
+            <div>
+              <label for="edit-lu-protein" class="text-[11px] text-stone-500">Protein (g)</label>
+              <input type="number" id="edit-lu-protein" required class="w-full bg-white border border-stone-300 rounded-lg px-2 py-1" />
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
+          <label for="edit-di-items" class="block font-bold text-stone-800">Dinner Items (7:30 PM – 9:00 PM)</label>
+          <input type="text" id="edit-di-items" required class="w-full bg-white border border-stone-300 rounded-lg px-2.5 py-1.5" />
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label for="edit-di-kcal" class="text-[11px] text-stone-500">Calories (kcal)</label>
+              <input type="number" id="edit-di-kcal" required class="w-full bg-white border border-stone-300 rounded-lg px-2 py-1" />
+            </div>
+            <div>
+              <label for="edit-di-protein" class="text-[11px] text-stone-500">Protein (g)</label>
+              <input type="number" id="edit-di-protein" required class="w-full bg-white border border-stone-300 rounded-lg px-2 py-1" />
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" id="btn-cancel-edit-modal" class="px-4 py-2 rounded-xl bg-stone-100 text-stone-700 font-semibold">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-orange-600 text-white font-bold">Save Menu &amp; Macros</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL 3: WALLET TOP-UP & DUES PAYMENT
+       ========================================== -->
+  <div id="modal-payment" class="fixed inset-0 bg-stone-950/70 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-stone-200 space-y-4">
+      <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+        <h3 class="text-sm font-extrabold text-stone-900" id="payment-modal-title">Mess Wallet &amp; Dues Payment</h3>
+        <button type="button" id="btn-close-payment" class="text-stone-400 hover:text-stone-700 text-xs font-bold">Close</button>
+      </div>
+      <form id="form-payment" class="space-y-3 text-xs">
+        <div>
+          <label for="pay-target" class="block font-semibold text-stone-700 mb-1">Payment Purpose</label>
+          <select id="pay-target" class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 font-bold">
+            <option value="topup">Top Up Prepaid Mess Wallet</option>
+            <option value="dues">Pay Outstanding Semester Mess Dues</option>
+          </select>
+        </div>
+        <div>
+          <label for="pay-method" class="block font-semibold text-stone-700 mb-1">Payment Mode</label>
+          <select id="pay-method" class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2">
+            <option value="UPI (BHIM / GPay / PhonePe)">UPI (BHIM / GPay / PhonePe)</option>
+            <option value="SBI Collect / NetBanking">SBI Collect / Campus NetBanking</option>
+            <option value="Debit / RuPay Card">Debit / RuPay Card</option>
+          </select>
+        </div>
+        <div>
+          <label for="pay-amount" class="block font-semibold text-stone-700 mb-1">Amount (₹)</label>
+          <input type="number" id="pay-amount" value="1000" min="100" max="25000" step="50" required class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-sm font-extrabold text-stone-900" />
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold transition">
+          Confirm Instant Payment
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed bottom-16 sm:bottom-5 right-4 z-50 space-y-2 pointer-events-none"></div>
+
+  <!-- Desktop Footer -->
+  <footer class="bg-white border-t border-stone-200 mt-10 py-4 text-xs text-stone-500 hidden sm:block">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
+      <span>IIIT Bhubaneswar Campus Dining &amp; Mess Management • Gothapatana, Malipada, Bhubaneswar, Odisha</span>
+      <span>Ground Floor: P. Siva Prasad Caterer (9078210647) • First Floor: Swain Caterer (7787050616)</span>
+    </div>
+  </footer>
+
+  <!-- ==========================================
+       APPLICATION LOGIC
+       ========================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      // Initial Default State with Rich Per-Caterer Data & Nutritional Macros
+      const DEFAULT_STATE = {
+        portalMode: 'student', // 'student' or 'caterer'
+        currentStudent: {
+          id: 'B123045',
+          name: 'Aarav Mohanty',
+          hostel: 'Hostel-1, Floor 4, Room 412'
+        },
+        walletBalance: 1450,
+        pendingDues: 3200,
+        studentSelectedCaterer: 'ground',
+        loggedCaterer: 'ground',
+        loggedMealsToday: {
+          breakfast: true,
+          lunch: false,
+          dinner: false
+        },
+        caterers: {
+          ground: {
+            id: 'ground',
+            name: 'P. Siva Prasad Caterer',
+            proprietor: 'P. Siva Prasad',
+            floor: 'Ground Floor Mess',
+            phone: '9078210647',
+            fssai: '22024011000412',
+            specialty: 'South Indian & Odia Authentics',
+            subscribers: 640,
+            expectedNextMeal: 425,
+            nonVegRatio: 0.66,
+            weeklyTurnout: [420, 405, 435, 415, 440, 390, 455],
+            qualityScores: [4.5, 4.3, 4.4, 4.4, 4.2], // Breakfast, Lunch, Dinner, Hygiene, Freshness
+            menu: [
+              {
+                day: 'Monday',
+                breakfast: { items: 'Aloo Paratha with Fresh Curd, Banana / Boiled Egg, Sprouts, Tea/Coffee', kcal: 580, protein: 16, carbs: 78, fat: 19, fiber: 7 },
+                lunch: { items: 'Steamed Rice, Phulka Roti, Dal Fry, Rajma Masala / Egg Curry, Mix Veg, Curd, Papad', kcal: 790, protein: 24, carbs: 108, fat: 24, fiber: 11 },
+                dinner: { items: 'Steamed Rice, Chapathi, Chana Masala, Paneer Butter Masala / Homestyle Chicken Curry, Salad', kcal: 820, protein: 31, carbs: 96, fat: 28, fiber: 9 }
+              },
+              {
+                day: 'Tuesday',
+                breakfast: { items: 'Odisha Special Bara Ghuguni & Rava Upma, Coconut Chutney, Banana, Tea/Coffee', kcal: 540, protein: 15, carbs: 82, fat: 16, fiber: 8 },
+                lunch: { items: 'Jeera Rice, Roti, Masoor Dal, Aloo Gobi Masala, Curd Rice, Fryums, Green Salad', kcal: 740, protein: 19, carbs: 112, fat: 21, fiber: 10 },
+                dinner: { items: 'Steamed Rice, Roti, Tadka Dal, Veg Manchurian / Odia Egg Masala, Cucumber Salad, Semiya Payasam', kcal: 780, protein: 23, carbs: 102, fat: 25, fiber: 8 }
+              },
+              {
+                day: 'Wednesday',
+                breakfast: { items: 'Kanda Poha, Crispy Medu Wada, Sambar, Omelette / Banana, Bread Butter Jam, Coffee', kcal: 560, protein: 17, carbs: 76, fat: 18, fiber: 6 },
+                lunch: { items: 'Steamed Rice, Roti, Sambar, Matar Paneer / Odia Chicken Kosha, Cabbage Thoran, Curd', kcal: 830, protein: 32, carbs: 104, fat: 27, fiber: 9 },
+                dinner: { items: 'Kashmiri Pulao, Masala Chapathi, Kadai Paneer / Butter Chicken, Boondi Raita, Ice Cream', kcal: 860, protein: 34, carbs: 98, fat: 31, fiber: 7 }
+              },
+              {
+                day: 'Thursday',
+                breakfast: { items: 'Cuttack Style Dahi Bara Aloo Dum / Steamed Idli Wada, Sambar & White Chutney, Tea', kcal: 520, protein: 14, carbs: 80, fat: 15, fiber: 7 },
+                lunch: { items: 'Steamed Rice, Roti, Moong Dal, Amritsari Chole, Crispy Bhindi Fry, Curd, Lemon Pickle', kcal: 750, protein: 21, carbs: 110, fat: 20, fiber: 12 },
+                dinner: { items: 'Steamed Rice, Roti, Dal Makhani, Mushroom Masala / Rohu Fish Besara, Onion Salad, Gulab Jamun', kcal: 810, protein: 29, carbs: 100, fat: 26, fiber: 8 }
+              },
+              {
+                day: 'Friday',
+                breakfast: { items: 'Crispy Rava Dosa / Onion Uttapam, Groundnut & Tomato Chutney, Sambar, Boiled Egg / Banana', kcal: 550, protein: 16, carbs: 79, fat: 17, fiber: 6 },
+                lunch: { items: 'Steamed Rice, Roti, Arhar Dal, Palak Paneer / Chicken Gravy, Aloo Peas Dry, Curd', kcal: 800, protein: 30, carbs: 102, fat: 25, fiber: 10 },
+                dinner: { items: 'Veg Schezwan Fried Rice, Chapathi, Gobi Manchurian / Chilli Chicken, Sweet Corn Soup, Fruit Custard', kcal: 840, protein: 28, carbs: 106, fat: 27, fiber: 8 }
+              },
+              {
+                day: 'Saturday',
+                breakfast: { items: 'Stuffed Bread Pakoda / Methi Poori & Aloo Masala, Tomato Ketchup, Masala Chai', kcal: 610, protein: 14, carbs: 84, fat: 23, fiber: 6 },
+                lunch: { items: 'Steamed Rice, Roti, Panchmel Dal, Soyabean Meal Maker Curry, Smoked Baingan Bharta, Curd Rice', kcal: 760, protein: 25, carbs: 106, fat: 21, fiber: 11 },
+                dinner: { items: 'Lachha Paratha, Steamed Rice, Dal Fry, Malai Kofta /Masala Egg Bhurji, Salad, Warm Odia Rasagola', kcal: 830, protein: 26, carbs: 101, fat: 28, fiber: 8 }
+              },
+              {
+                day: 'Sunday',
+                breakfast: { items: 'Vegetable Masala Maggi, Double Omelette / Sweet Corn Bowl, Toasted Wheat Bread, Coffee', kcal: 570, protein: 18, carbs: 74, fat: 20, fiber: 5 },
+                lunch: { items: 'Hyderabadi Chicken Dum Biryani / Subz Paneer Biryani, Mirchi Salan, Onion Raita, Papad', kcal: 890, protein: 35, carbs: 110, fat: 30, fiber: 8 },
+                dinner: { items: 'Steamed Rice, Soft Phulka, Yellow Dal Tadka, Aloo Matar Gravy, Seasonal Veg, Curd, Rice Kheer', kcal: 740, protein: 20, carbs: 104, fat: 22, fiber: 9 }
+              }
+            ]
+          },
+          first: {
+            id: 'first',
+            name: 'Swain Caterer',
+            proprietor: 'R. K. Swain',
+            floor: 'First Floor Mess',
+            phone: '7787050616',
+            fssai: '22024011000889',
+            specialty: 'North Indian, Mughlai & Odia Thali Specials',
+            subscribers: 560,
+            expectedNextMeal: 380,
+            nonVegRatio: 0.62,
+            weeklyTurnout: [375, 390, 380, 400, 395, 360, 415],
+            qualityScores: [4.3, 4.4, 4.2, 4.3, 4.3],
+            menu: [
+              {
+                day: 'Monday',
+                breakfast: { items: 'Paneer Stuffed Paratha, Boondi Raita, Boiled Egg / Banana, Cornflakes with Milk, Tea', kcal: 610, protein: 19, carbs: 76, fat: 22, fiber: 6 },
+                lunch: { items: 'Steamed Rice, Tandoori Roti, Dal Tadka, Kala Chana Ghuguni, Egg Masala / Shahi Paneer, Curd', kcal: 810, protein: 27, carbs: 106, fat: 25, fiber: 10 },
+                dinner: { items: 'Jeera Rice, Phulka, Dal Makhani, Chicken Tikka Masala / Kadai Paneer, Green Salad, Moong Dal Halwa', kcal: 850, protein: 33, carbs: 98, fat: 29, fiber: 8 }
+              },
+              {
+                day: 'Tuesday',
+                breakfast: { items: 'Mysore Masala Dosa, Sambar, Roasted Peanut Chutney, Banana, Filter Coffee / Tea', kcal: 560, protein: 15, carbs: 84, fat: 17, fiber: 7 },
+                lunch: { items: 'Steamed Rice, Roti, Odia Authentic Dalma, Saga Bhaja, Aloo Bharta, Curd, Roasted Papad', kcal: 730, protein: 20, carbs: 108, fat: 19, fiber: 12 },
+                dinner: { items: 'Steamed Rice, Chapathi, Chole Bhature (2 pcs) / Egg Do Pyaza, Pickled Onions, Boondi Ladoo', kcal: 820, protein: 24, carbs: 104, fat: 27, fiber: 9 }
+              },
+              {
+                day: 'Wednesday',
+                breakfast: { items: 'Chole Kulche / Vegetable Sandwich, Boiled Egg, Sprouts Salad, Hot Milk / Coffee', kcal: 580, protein: 18, carbs: 79, fat: 19, fiber: 7 },
+                lunch: { items: 'Steamed Rice, Roti, Yellow Dal, Methi Malai Matar / Dhaba Chicken Curry, Aloo Jeera, Curd', kcal: 820, protein: 31, carbs: 102, fat: 26, fiber: 9 },
+                dinner: { items: 'Peas Pulao, Butter Naan, Paneer Lababdar / Mughlai Chicken Korma, Cucumber Raita, Chocobar', kcal: 870, protein: 34, carbs: 100, fat: 32, fiber: 7 }
+              },
+              {
+                day: 'Thursday',
+                breakfast: { items: 'Puri Bhaji, Suji Halwa, Chickpea Sundal, Tea / Coffee', kcal: 590, protein: 14, carbs: 86, fat: 21, fiber: 6 },
+                lunch: { items: 'Steamed Rice, Roti, Rajma Chawal Bowl, Lauki Chana Dal, Curd, Papad, GreenChilli Pickle', kcal: 750, protein: 22, carbs: 112, fat: 19, fiber: 11 },
+                dinner: { items: 'Steamed Rice, Roti, Dal Fry, Soya Chaap Masala / Mustard Fish Curry, Salad, Rasmalai', kcal: 800, protein: 30, carbs: 96, fat: 25, fiber: 8 }
+              },
+              {
+                day: 'Friday',
+                breakfast: { items: 'Gobi Paratha, Curd, Omelette / Banana, Peanut Butter Toast, Tea / Coffee', kcal: 590, protein: 18, carbs: 75, fat: 21, fiber: 7 },
+                lunch: { items: 'Steamed Rice, Roti, Toor Dal, Paneer Bhurji / Chicken Pepper Fry, Bhindi Do Pyaza, Curd', kcal: 810, protein: 31, carbs: 100, fat: 26, fiber: 9 },
+                dinner: { items: 'Hakka Noodles & Fried Rice, Manchurian Balls / Crispy Honey Chilli Chicken, Manchow Soup', kcal: 830, protein: 27, carbs: 108, fat: 26, fiber: 7 }
+              },
+              {
+                day: 'Saturday',
+                breakfast: { items: 'Dahi Bara Aloo Dum, Sev & Onion Garnish, Sweet Curd Cup, Tea / Coffee', kcal: 530, protein: 15, carbs: 80, fat: 16, fiber: 7 },
+                lunch: { items: 'Steamed Rice, Roti, Khichdi Special, Beguni, Tomato Khatta, Papad, Curd', kcal: 740, protein: 19, carbs: 110, fat: 20, fiber: 10 },
+                dinner: { items: 'Ajwain Paratha, Rice, Tadka Dal, Matar Mushroom / Egg Kassa, Salad, Hot Jalebi', kcal: 810, protein: 24, carbs: 104, fat: 26, fiber: 8 }
+              },
+              {
+                day: 'Sunday',
+                breakfast: { items: 'Masala Uttapam & Medu Wada, Sambar, Coconut Chutney, Boiled Egg / Banana, Coffee', kcal: 560, protein: 17, carbs: 78, fat: 18, fiber: 7 },
+                lunch: { items: 'Kolkata Style Chicken Biryani (with Aloo & Egg) / Nawabi Veg Biryani, Burhani Raita, Salad', kcal: 880, protein: 34, carbs: 112, fat: 29, fiber: 8 },
+                dinner: { items: 'Steamed Rice, Phulka, Dal Fry, Mix Veg Jalfrezi, Aloo Gobi, Curd, Sevaiyan Kheer', kcal: 730, protein: 19, carbs: 102, fat: 21, fiber: 9 }
+              }
+            ]
+          }
+        },
+        notices: [
+          {
+            id: 'NOT-1',
+            caterer: 'P. Siva Prasad Caterer (Ground Floor)',
+            tag: 'Special Menu',
+            title: 'Sunday Feast: Hyderabadi Dum Biryani & Paneer Tikka Counter',
+            body: 'Live counter opens at 12:15 PM this Sunday. Extra Boondi Raita and Mirchi Salan included for all coupon holders.',
+            date: 'Nov 10, 2026'
+          },
+          {
+            id: 'NOT-2',
+            caterer: 'Swain Caterer (First Floor)',
+            tag: 'Special Menu',
+            title: 'Thursday Odia Special: Authentic Dalma & Mustard Rohu Fish',
+            body: 'Prepared with pure cow ghee and fresh local produce. Separate pure vegetarian Paneer & Mushroom counter available.',
+            date: 'Nov 09, 2026'
+          },
+          {
+            id: 'NOT-3',
+            caterer: 'Both Campus Messes',
+            tag: 'Hygiene Audit',
+            title: 'Monthly FSSAI & Warden Hygiene Audit Completed (4.4/5 ★)',
+            body: 'Water TDS, RO filters, and fortified rice bran oil batches verified by the IIIT Bhubaneswar Hostel Mess Committee.',
+            date: 'Nov 08, 2026'
+          }
+        ],
+        coupons: [
+          {
+            id: 'CPN-8841',
+            studentId: 'B123045',
+            studentName: 'Aarav Mohanty',
+            catererId: 'ground',
+            catererName: 'P. Siva Prasad Caterer (Ground Floor)',
+            diet: 'Non-Vegetarian',
+            mealCount: 21,
+            totalCost: 1015,
+            paymentMode: 'Prepaid Wallet',
+            timestamp: 'Nov 09, 2026 • 08:15 AM'
+          },
+          {
+            id: 'CPN-8835',
+            studentId: 'B123082',
+            studentName: 'Ananya Das',
+            catererId: 'first',
+            catererName: 'Swain Caterer (First Floor)',
+            diet: 'Pure Vegetarian',
+            mealCount: 15,
+            totalCost: 725,
+            paymentMode: 'Semester Dues',
+            timestamp: 'Nov 08, 2026 • 07:45 PM'
+          }
+        ],
+        leaves: [
+          {
+            id: 'LVE-301',
+            student: 'B123045 — Aarav Mohanty',
+            caterer: 'P. Siva Prasad Caterer (Ground Floor)',
+            startDate: '2026-11-14',
+            endDate: '2026-11-18',
+            days: 5,
+            amount: 575,
+            reason: 'Home Visit to Cuttack',
+            status: 'Pending'
+          },
+          {
+            id: 'LVE-294',
+            student: 'B123082 — Ananya Das',
+            caterer: 'Swain Caterer (First Floor)',
+            startDate: '2026-11-01',
+            endDate: '2026-11-04',
+            days: 4,
+            amount: 460,
+            reason: 'Inter-IIIT Sports Meet',
+            status: 'Approved'
+          }
+        ],
+        transactions: [
+          { id: 'TXN-904', title: 'Weekly Mess Coupon Pack (CPN-8841)', amount: -1015, mode: 'Mess Wallet', date: 'Nov 09, 2026' },
+          { id: 'TXN-901', title: 'Leave Rebate Credited (LVE-294 - 4 Days)', amount: 460, mode: 'Rebate Refund', date: 'Nov 05, 2026' },
+          { id: 'TXN-889', title: 'Wallet Top-Up via UPI', amount: 2000, mode: 'UPI Instant', date: 'Nov 01, 2026' }
+        ],
+        complaints: [
+          {
+            id: 'TKT-409',
+            type: 'Complaint',
+            student: 'B123045 — Aarav Mohanty',
+            caterer: 'P. Siva Prasad Caterer (Ground Floor)',
+            category: 'Chapati / Rice Freshness',
+            rating: 2,
+            message: 'Rotis served in the 8:30 PM dinner batch were slightly cold; please keep insulated hot-cases refilled until 9:00 PM.',
+            status: 'Open',
+            reply: '',
+            date: 'Nov 09, 2026'
+          },
+          {
+            id: 'TKT-402',
+            type: 'Feedback',
+            student: 'B123082 — Ananya Das',
+            caterer: 'Swain Caterer (First Floor)',
+            category: 'Food Quality & Taste',
+            rating: 5,
+            message: 'Tuesday Odia Dalma and Mysore Masala Dosa were super fresh and well-balanced in spice!',
+            status: 'Resolved',
+            reply: 'Thank you Ananya! Our kitchen team appreciates your kind words.',
+            date: 'Nov 08, 2026'
+          }
+        ]
+      };
+
+      let state = loadState();
+      let catAttChart = null;
+      let catQualChart = null;
+
+      function loadState() {
+        try {
+          const saved = localStorage.getItem('iiit_bh_dining_prod_v2');
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            if (parsed && parsed.caterers && parsed.caterers.ground) return parsed;
+          }
+        } catch (e) {}
+        return JSON.parse(JSON.stringify(DEFAULT_STATE));
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem('iiit_bh_dining_prod_v2', JSON.stringify(state));
+        } catch (e) {}
+        try {
+          fetch('/api/sync', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(state)
+          }).catch(function () {});
+        } catch (e) {}
+      }
+
+      function showToast(msg, variant) {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+        const div = document.createElement('div');
+        const colors = variant === 'error'
+          ? 'bg-rose-600 text-white'
+          : 'bg-stone-900 text-amber-300 border border-amber-500/40';
+        div.className = 'px-4 py-2.5 rounded-2xl shadow-xl text-xs font-bold transition-all pointer-events-auto ' + colors;
+        div.textContent = msg;
+        container.appendChild(div);
+        setTimeout(function () {
+          if (div.parentNode) div.parentNode.removeChild(div);
+        }, 3200);
+      }
+
+      // ==========================================
+      // PORTAL MODE SWITCHING (Student vs Caterer)
+      // ==========================================
+      function syncPortalModeUI() {
+        const isStudent = state.portalMode === 'student';
+        const stRoot = document.getElementById('student-portal-root');
+        const catRoot = document.getElementById('caterer-portal-root');
+        const stDeskNav = document.getElementById('student-desktop-nav');
+        const catDeskNav = document.getElementById('caterer-desktop-nav');
+        const stMobNav = document.getElementById('student-mobile-nav');
+        const catMobNav = document.getElementById('caterer-mobile-nav');
+        const stWalletPill = document.getElementById('header-student-wallet');
+        const catSelectPill = document.getElementById('header-caterer-selector');
+        const modePill = document.getElementById('portal-mode-pill');
+        const userBadge = document.getElementById('active-user-badge');
+
+        if (isStudent) {
+          stRoot.classList.remove('hidden');
+          catRoot.classList.add('hidden');
+          stDeskNav.classList.remove('hidden');
+          stDeskNav.classList.add('flex');
+          catDeskNav.classList.add('hidden');
+          catDeskNav.classList.remove('flex');
+          stMobNav.classList.remove('hidden');
+          stMobNav.classList.add('grid');
+          catMobNav.classList.add('hidden');
+          catMobNav.classList.remove('grid');
+          stWalletPill.classList.remove('hidden');
+          stWalletPill.classList.add('flex');
+          catSelectPill.classList.add('hidden');
+          catSelectPill.classList.remove('flex');
+          modePill.textContent = 'Student Portal';
+          modePill.className = 'text-[11px] px-2.5 py-0.5 rounded-full bg-orange-500/20 text-orange-300 border border-orange-500/30 font-semibold';
+          userBadge.textContent = state.currentStudent.name.split(' ')[0] + ' (' + state.currentStudent.id + ')';
+        } else {
+          const activeVendor = state.caterers[state.loggedCaterer] || state.caterers.ground;
+          stRoot.classList.add('hidden');
+          catRoot.classList.remove('hidden');
+          stDeskNav.classList.add('hidden');
+          stDeskNav.classList.remove('flex');
+          catDeskNav.classList.remove('hidden');
+          catDeskNav.classList.add('flex');
+          stMobNav.classList.add('hidden');
+          stMobNav.classList.remove('grid');
+          catMobNav.classList.remove('hidden');
+          catMobNav.classList.add('grid');
+          stWalletPill.classList.add('hidden');
+          stWalletPill.classList.remove('flex');
+          catSelectPill.classList.remove('hidden');
+          catSelectPill.classList.add('flex');
+          modePill.textContent = 'Caterer Console';
+          modePill.className = 'text-[11px] px-2.5 py-0.5 rounded-full bg-amber-400 text-stone-950 font-extrabold';
+          userBadge.textContent = activeVendor.name;
+          document.getElementById('caterer-account-select').value = state.loggedCaterer;
+          setTimeout(renderCatererCharts, 60);
+        }
+      }
+
+      // ==========================================
+      // STUDENT PORTAL RENDERERS
+      // ==========================================
+      function renderStudentHeaderAndCatererBar() {
+        document.getElementById('header-wallet-val').textContent = '₹' + Number(state.walletBalance).toLocaleString('en-IN');
+        document.getElementById('header-dues-val').textContent = '₹' + Number(state.pendingDues).toLocaleString('en-IN');
+
+        const btnG = document.getElementById('st-select-ground');
+        const btnF = document.getElementById('st-select-first');
+        if (state.studentSelectedCaterer === 'ground') {
+          btnG.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition bg-orange-600 text-white shadow-sm';
+          btnF.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition text-stone-600 hover:text-stone-900';
+        } else {
+          btnF.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition bg-orange-600 text-white shadow-sm';
+          btnG.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition text-stone-600 hover:text-stone-900';
+        }
+
+        const cat = state.caterers[state.studentSelectedCaterer];
+        const avgScore = (cat.qualityScores.reduce(function (a, b) { return a + b; }, 0) / cat.qualityScores.length).toFixed(1);
+        const metaEl = document.getElementById('student-caterer-meta');
+        if (metaEl) {
+          metaEl.innerHTML =
+            '<span class="px-2.5 py-1 rounded-lg bg-stone-100 text-stone-800 font-semibold">Contact: ' + cat.phone + '</span>' +
+            '<span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">FSSAI: ' + cat.fssai + '</span>' +
+            '<span class="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-900 border border-amber-200 font-bold">' + avgScore + ' ★ Rating</span>';
+        }
+      }
+
+      function renderNoticeBoard() {
+        const stBoard = document.getElementById('student-notice-board');
+        const catList = document.getElementById('cat-notices-list');
+
+        if (stBoard) {
+          stBoard.innerHTML = state.notices.slice(0, 3).map(function (n) {
+            const tagColor = n.tag === 'Special Menu'
+              ? 'bg-amber-400 text-stone-950'
+              : (n.tag === 'Timing Update' ? 'bg-orange-500 text-white' : 'bg-emerald-500 text-stone-950');
+            return (
+              '<div class="bg-stone-800/90 border border-stone-700 rounded-xl p-3.5 flex flex-col justify-between space-y-2">' +
+                '<div class="space-y-1.5">' +
+                  '<div class="flex items-center justify-between gap-2">' +
+                    '<span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full ' + tagColor + '">' + n.tag + '</span>' +
+                    '<span class="text-[11px] text-stone-400">' + n.date + '</span>' +
+                  '</div>' +
+                  '<h4 class="text-xs font-bold text-white leading-snug">' + n.title + '</h4>' +
+                  '<p class="text-[11px] text-stone-300 leading-relaxed">' + n.body + '</p>' +
+                '</div>' +
+                '<div class="pt-1.5 border-t border-stone-700/60 text-[10px] text-amber-300 font-semibold">' +
+                  n.caterer +
+                '</div>' +
+              '</div>'
+            );
+          }).join('');
+        }
+
+        if (catList) {
+          catList.innerHTML = state.notices.map(function (n) {
+            return (
+              '<div class="p-4 rounded-xl bg-stone-50 border border-stone-200 flex items-start justify-between gap-3">' +
+                '<div class="space-y-1">' +
+                  '<div class="flex items-center gap-2">' +
+                    '<span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-amber-100 text-amber-900">' + n.tag + '</span>' +
+                    '<span class="text-xs font-bold text-stone-900">' + n.title + '</span>' +
+                  '</div>' +
+                  '<p class="text-xs text-stone-600">' + n.body + '</p>' +
+                  '<span class="block text-[11px] text-stone-400">' + n.caterer + ' • ' + n.date + '</span>' +
+                '</div>' +
+                '<button type="button" data-delete-notice="' + n.id + '" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold shrink-0">Remove</button>' +
+              '</div>'
+            );
+          }).join('');
+        }
+      }
+
+      function renderStudentTodayAndMacros() {
+        const daySelect = document.getElementById('st-home-day-select');
+        const selectedDay = daySelect ? daySelect.value : 'Monday';
+        const cat = state.caterers[state.studentSelectedCaterer];
+        const dayObj = cat.menu.find(function (m) { return m.day === selectedDay; }) || cat.menu[0];
+
+        // Calculate logged macros
+        let kcal = 0, protein = 0, carbs = 0, fat = 0, fiber = 0;
+        ['breakfast', 'lunch', 'dinner'].forEach(function (slot) {
+          if (state.loggedMealsToday[slot] && dayObj[slot]) {
+            kcal += Number(dayObj[slot].kcal || 0);
+            protein += Number(dayObj[slot].protein || 0);
+            carbs += Number(dayObj[slot].carbs || 0);
+            fat += Number(dayObj[slot].fat || 0);
+            fiber += Number(dayObj[slot].fiber || 0);
+          }
+        });
+
+        document.getElementById('macro-total-kcal').textContent = kcal.toLocaleString('en-IN');
+        document.getElementById('macro-total-protein').textContent = String(protein);
+        document.getElementById('macro-total-carbs').textContent = String(carbs);
+        document.getElementById('macro-total-fat').textContent = String(fat);
+        document.getElementById('macro-total-fiber').textContent = String(fiber);
+
+        document.getElementById('bar-protein').style.width = Math.min(100, Math.round((protein / 75) * 100)) + '%';
+        document.getElementById('bar-carbs').style.width = Math.min(100, Math.round((carbs / 280) * 100)) + '%';
+        document.getElementById('bar-fat').style.width = Math.min(100, Math.round((fat / 65) * 100)) + '%';
+        document.getElementById('bar-fiber').style.width = Math.min(100, Math.round((fiber / 30) * 100)) + '%';
+
+        const slots = [
+          { key: 'breakfast', label: 'Breakfast', hours: '7:30 AM – 9:00 AM', price: '₹35', data: dayObj.breakfast },
+          { key: 'lunch', label: 'Lunch', hours: '12:00 PM – 2:00 PM', price: '₹55', data: dayObj.lunch },
+          { key: 'dinner', label: 'Dinner', hours: '7:30 PM – 9:00 PM', price: '₹55', data: dayObj.dinner }
+        ];
+
+        const grid = document.getElementById('st-today-meals-grid');
+        if (grid) {
+          grid.innerHTML = slots.map(function (s) {
+            const isLogged = Boolean(state.loggedMealsToday[s.key]);
+            const btnClass = isLogged
+              ? 'bg-emerald-700 text-white'
+              : 'bg-stone-100 hover:bg-orange-50 text-stone-700 hover:text-orange-700 border border-stone-300';
+
+            return (
+              '<div class="rounded-2xl border border-stone-200 p-4 bg-stone-50/60 hover:bg-white transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">' +
+                '<div class="space-y-1.5 flex-1">' +
+                  '<div class="flex items-center gap-2 flex-wrap">' +
+                    '<span class="text-sm font-extrabold text-stone-900">' + s.label + '</span>' +
+                    '<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900">' + s.hours + '</span>' +
+                    '<span class="text-[11px] font-bold text-stone-500">Coupon: ' + s.price + '</span>' +
+                  '</div>' +
+                  '<p class="text-xs text-stone-700 leading-relaxed">' + s.data.items + '</p>' +
+                  '<div class="flex flex-wrap items-center gap-1.5 pt-1">' +
+                    '<span class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-stone-200/80 text-stone-800">' + s.data.kcal + ' kcal</span>' +
+                    '<span class="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200">' + s.data.protein + 'g Protein</span>' +
+                    '<span class="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200">' + s.data.carbs + 'g Carbs</span>' +
+                    '<span class="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-orange-50 text-orange-800 border border-orange-200">' + s.data.fat + 'g Fat</span>' +
+                    '<span class="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-stone-100 text-stone-600">' + s.data.fiber + 'g Fiber</span>' +
+                  '</div>' +
+                '</div>' +
+                '<button type="button" data-toggle-macro="' + s.key + '" class="px-3.5 py-2 rounded-xl text-xs font-bold transition shrink-0 ' + btnClass + '">' +
+                  (isLogged ? '✓ Eaten (Logged)' : '+ Log Meal Eaten') +
+                '</button>' +
+              '</div>'
+            );
+          }).join('');
+        }
+      }
+
+      function renderStudentWeeklyMenu() {
+        const tbody = document.getElementById('st-menu-table-body');
+        if (!tbody) return;
+        const cat = state.caterers[state.studentSelectedCaterer];
+        const query = (document.getElementById('st-menu-search').value || '').trim().toLowerCase();
+        const diet = document.getElementById('st-menu-diet').value;
+
+        const cleanVeg = function (str) {
+          if (diet !== 'veg') return str;
+          return str.replace(/\/ (Boiled Egg|Egg Curry|Homestyle Chicken Curry|Odia Egg Masala|Omelette|Odia Chicken Kosha|Butter Chicken|Rohu Fish Besara|Chicken Gravy|Chilli Chicken|Masala Egg Bhurji|Double Omelette|Hyderabadi Chicken Dum Biryani|Egg Masala|Chicken Tikka Masala|Egg Do Pyaza|Dhaba Chicken Curry|Mughlai Chicken Korma|Mustard Fish Curry|Chicken Pepper Fry|Crispy Honey Chilli Chicken|Egg Kassa|Kolkata Style Chicken Biryani \(with Aloo & Egg\))/gi, '');
+        };
+
+        const rows = cat.menu.filter(function (m) {
+          const allText = (m.day + ' ' + m.breakfast.items + ' ' + m.lunch.items + ' ' + m.dinner.items).toLowerCase();
+          if (query && allText.indexOf(query) === -1) return false;
+          if (diet === 'highprotein') {
+            return (m.lunch.protein >= 22 || m.dinner.protein >= 22);
+          }
+          return true;
+        });
+
+        if (rows.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-stone-400">No menu days match your filter criteria.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = rows.map(function (m) {
+          const totalKcal = m.breakfast.kcal + m.lunch.kcal + m.dinner.kcal;
+          const totalProt = m.breakfast.protein + m.lunch.protein + m.dinner.protein;
+          return (
+            '<tr class="hover:bg-stone-50/80 transition align-top">' +
+              '<td class="py-3.5 px-4 font-extrabold text-stone-900">' + m.day + '</td>' +
+              '<td class="py-3.5 px-4">' +
+                '<p class="text-stone-800 leading-relaxed">' + cleanVeg(m.breakfast.items) + '</p>' +
+                '<span class="inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded bg-stone-100 text-stone-600">' + m.breakfast.kcal + ' kcal • ' + m.breakfast.protein + 'g P</span>' +
+              '</td>' +
+              '<td class="py-3.5 px-4">' +
+                '<p class="text-stone-800 leading-relaxed">' + cleanVeg(m.lunch.items) + '</p>' +
+                '<span class="inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-800">' + m.lunch.kcal + ' kcal • ' + m.lunch.protein + 'g P</span>' +
+              '</td>' +
+              '<td class="py-3.5 px-4">' +
+                '<p class="text-stone-800 leading-relaxed">' + cleanVeg(m.dinner.items) + '</p>' +
+                '<span class="inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-900">' + m.dinner.kcal + ' kcal • ' + m.dinner.protein + 'g P</span>' +
+              '</td>' +
+              '<td class="py-3.5 px-4 text-right">' +
+                '<span class="font-extrabold text-stone-900 block">' + totalKcal + ' kcal</span>' +
+                '<span class="text-[11px] font-bold text-emerald-700">' + totalProt + 'g Protein</span>' +
+              '</td>' +
+            '</tr>'
+          );
+        }).join('');
+      }
+
+      // ==========================================
+      // COUPONS SYSTEM
+      // ==========================================
+      function initStudentCouponMatrix() {
+        const tbody = document.getElementById('st-coupon-matrix');
+        if (!tbody) return;
+        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        tbody.innerHTML = days.map(function (d) {
+          return (
+            '<tr>' +
+              '<td class="py-2 px-3 font-semibold text-stone-800">' + d + '</td>' +
+              '<td class="py-2 px-3 text-center"><input type="checkbox" class="st-meal-cb w-4 h-4 accent-orange-600 rounded cursor-pointer" data-day="' + d + '" data-slot="B" data-price="35" checked /></td>' +
+              '<td class="py-2 px-3 text-center"><input type="checkbox" class="st-meal-cb w-4 h-4 accent-orange-600 rounded cursor-pointer" data-day="' + d + '" data-slot="L" data-price="55" checked /></td>' +
+              '<td class="py-2 px-3 text-center"><input type="checkbox" class="st-meal-cb w-4 h-4 accent-orange-600 rounded cursor-pointer" data-day="' + d + '" data-slot="D" data-price="55" checked /></td>' +
+            '</tr>'
+          );
+        }).join('');
+        recalcCouponSelection();
+      }
+
+      function recalcCouponSelection() {
+        let count = 0, cost = 0;
+        document.querySelectorAll('.st-meal-cb').forEach(function (cb) {
+          if (cb.checked) {
+            count += 1;
+            cost += Number(cb.getAttribute('data-price') || 0);
+          }
+        });
+        document.getElementById('cpn-selected-count').textContent = String(count);
+        document.getElementById('cpn-selected-cost').textContent = String(cost);
+        return { count: count, cost: cost };
+      }
+
+      function renderStudentCouponsList() {
+        const list = document.getElementById('st-coupon-list');
+        if (!list) return;
+        const top = state.coupons[0];
+        if (top) {
+          document.getElementById('qr-token-id').textContent = top.id;
+          document.getElementById('qr-caterer-name').textContent = top.catererName;
+          document.getElementById('qr-student-name').textContent = top.studentName + ' (' + top.studentId + ')';
+          document.getElementById('qr-diet-type').textContent = top.diet;
+          document.getElementById('qr-meal-count').textContent = top.mealCount + ' Meals Remaining';
+          document.getElementById('qr-issued-time').textContent = top.timestamp + ' • ' + top.paymentMode;
+        }
+        list.innerHTML = state.coupons.map(function (c) {
+          return (
+            '<div class="p-3 rounded-xl bg-stone-50 border border-stone-200 flex items-center justify-between text-xs">' +
+              '<div>' +
+                '<span class="font-bold text-stone-900">' + c.id + ' • ' + c.catererName + '</span>' +
+                '<p class="text-[11px] text-stone-500">' + c.diet + ' • ' + c.mealCount + ' meals (' + c.paymentMode + ')</p>' +
+              '</div>' +
+              '<span class="font-extrabold text-stone-900">₹' + c.totalCost + '</span>' +
+            '</div>'
+          );
+        }).join('');
+      }
+
+      // ==========================================
+      // PAYMENTS, DUES, LEAVES & REFUNDS
+      // ==========================================
+      function renderFinanceAndLeaves() {
+        document.getElementById('fin-wallet-balance').textContent = '₹' + Number(state.walletBalance).toLocaleString('en-IN');
+        document.getElementById('fin-dues-amount').textContent = '₹' + Number(state.pendingDues).toLocaleString('en-IN');
+        const duesBadge = document.getElementById('fin-dues-status');
+        if (state.pendingDues === 0) {
+          duesBadge.textContent = 'All Clear';
+          duesBadge.className = 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200';
+        } else {
+          duesBadge.textContent = 'Payment Due';
+          duesBadge.className = 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200';
+        }
+
+        const totalApprovedRefunds = state.leaves
+          .filter(function (l) { return l.status === 'Approved'; })
+          .reduce(function (acc, l) { return acc + Number(l.amount || 0); }, 0);
+        document.getElementById('fin-refunds-total').textContent = '₹' + totalApprovedRefunds.toLocaleString('en-IN');
+
+        // Student Leave Table
+        const stLeaveBody = document.getElementById('st-leave-table-body');
+        if (stLeaveBody) {
+          stLeaveBody.innerHTML = state.leaves.map(function (l) {
+            const stBadge = l.status === 'Approved'
+              ? 'bg-emerald-100 text-emerald-800'
+              : (l.status === 'Rejected' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-900');
+            return (
+              '<tr>' +
+                '<td class="py-2.5 px-3 font-bold text-stone-900">' + l.id + '</td>' +
+                '<td class="py-2.5 px-3 text-stone-700">' + l.caterer + '<div class="text-[11px] text-stone-400">' + l.reason + '</div></td>' +
+                '<td class="py-2.5 px-3 text-stone-700">' + l.startDate + ' to ' + l.endDate + ' <strong>(' + l.days + 'd)</strong></td>' +
+                '<td class="py-2.5 px-3 font-extrabold text-stone-900">₹' + l.amount + '</td>' +
+                '<td class="py-2.5 px-3 text-right"><span class="px-2 py-0.5 rounded-full text-[11px] font-bold ' + stBadge + '">' + (l.status === 'Approved' ? 'Approved & Refunded' : l.status) + '</span></td>' +
+              '</tr>'
+            );
+          }).join('');
+        }
+
+        // Student Transactions
+        const txnList = document.getElementById('st-transactions-list');
+        if (txnList) {
+          txnList.innerHTML = state.transactions.map(function (t) {
+            const isPos = t.amount >= 0;
+            return (
+              '<div class="p-2.5 rounded-xl bg-stone-50 border border-stone-200 flex items-center justify-between text-xs">' +
+                '<div>' +
+                  '<span class="font-bold text-stone-800">' + t.title + '</span>' +
+                  '<span class="block text-[11px] text-stone-400">' + t.id + ' • ' + t.mode + ' • ' + t.date + '</span>' +
+                '</div>' +
+                '<span class="font-extrabold ' + (isPos ? 'text-emerald-700' : 'text-stone-900') + '">' +
+                  (isPos ? '+₹' + t.amount : '-₹' + Math.abs(t.amount)) +
+                '</span>' +
+              '</div>'
+            );
+          }).join('');
+        }
+
+        // Caterer Leave Table
+        const catLeaveBody = document.getElementById('cat-leaves-table-body');
+        if (catLeaveBody) {
+          catLeaveBody.innerHTML = state.leaves.map(function (l) {
+            const stBadge = l.status === 'Approved'
+              ? 'bg-emerald-100 text-emerald-800'
+              : (l.status === 'Rejected' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-900');
+            return (
+              '<tr>' +
+                '<td class="py-3 px-4 font-bold text-stone-900">' + l.id + '<div class="text-[11px] font-normal text-stone-500">' + l.student + '</div></td>' +
+                '<td class="py-3 px-4 text-stone-700">' + l.caterer + '</td>' +
+                '<td class="py-3 px-4 text-stone-700">' + l.startDate + ' → ' + l.endDate + ' (' + l.days + ' days)<div class="text-[11px] text-stone-400">' + l.reason + '</div></td>' +
+                '<td class="py-3 px-4 font-extrabold text-stone-900">₹' + l.amount + '</td>' +
+                '<td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-[11px] font-bold ' + stBadge + '">' + l.status + '</span></td>' +
+                '<td class="py-3 px-4 text-right space-x-1.5">' +
+                  (l.status === 'Pending'
+                    ? '<button type="button" data-leave-action="approve" data-leave-id="' + l.id + '" class="px-2.5 py-1 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white text-[11px] font-bold">Approve &amp; Refund</button>' +
+                      '<button type="button" data-leave-action="reject" data-leave-id="' + l.id + '" class="px-2.5 py-1 rounded-lg bg-stone-200 hover:bg-stone-300 text-stone-700 text-[11px] font-bold">Reject</button>'
+                    : '<span class="text-[11px] text-stone-400 font-semibold">Settled</span>') +
+                '</td>' +
+              '</tr>'
+            );
+          }).join('');
+        }
+      }
+
+      // ==========================================
+      // FEEDBACK & COMPLAINTS RENDERERS
+      // ==========================================
+      function renderComplaintsAndFeedback() {
+        const stStream = document.getElementById('st-feedback-stream');
+        const filterVal = document.getElementById('st-fb-filter') ? document.getElementById('st-fb-filter').value : 'all';
+
+        const filtered = state.complaints.filter(function (c) {
+          if (filterVal !== 'all' && c.type !== filterVal) return false;
+          return true;
+        });
+
+        if (stStream) {
+          stStream.innerHTML = filtered.map(function (c) {
+            const stars = '★'.repeat(Number(c.rating || 4)) + '☆'.repeat(5 - Number(c.rating || 4));
+            const statusPill = c.status === 'Resolved'
+              ? 'bg-emerald-100 text-emerald-800'
+              : 'bg-rose-100 text-rose-800';
+            return (
+              '<div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-2">' +
+                '<div class="flex flex-wrap items-center justify-between gap-2 text-xs">' +
+                  '<div class="flex items-center gap-2">' +
+                    '<span class="font-mono font-bold text-stone-900">' + c.id + '</span>' +
+                    '<span class="px-2 py-0.5 rounded-md font-bold text-[10px] uppercase ' + (c.type === 'Complaint' ? 'bg-rose-600 text-white' : 'bg-amber-100 text-amber-900') + '">' + c.type + '</span>' +
+                    '<span class="font-semibold text-stone-700">' + c.category + '</span>' +
+                  '</div>' +
+                  '<div class="flex items-center gap-2">' +
+                    '<span class="text-amber-500 font-bold">' + stars + '</span>' +
+                    '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold ' + statusPill + '">' + c.status + '</span>' +
+                  '</div>' +
+                '</div>' +
+                '<p class="text-xs text-stone-800 leading-relaxed">' + c.message + '</p>' +
+                '<div class="text-[11px] text-stone-400 flex items-center justify-between">' +
+                  '<span>' + c.student + ' • ' + c.caterer + '</span>' +
+                  '<span>' + c.date + '</span>' +
+                '</div>' +
+                (c.reply
+                  ? '<div class="mt-2 p-2.5 rounded-xl bg-emerald-50/80 border border-emerald-200 text-xs text-emerald-950">' +
+                      '<strong class="block text-[11px] uppercase tracking-wider text-emerald-800">Official Caterer Response:</strong>' +
+                      c.reply +
+                    '</div>'
+                  : '') +
+              '</div>'
+            );
+          }).join('');
+        }
+
+        const catList = document.getElementById('cat-complaints-list');
+        if (catList) {
+          catList.innerHTML = state.complaints.map(function (c) {
+            return (
+              '<div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-3">' +
+                '<div class="flex flex-wrap items-center justify-between gap-2 text-xs">' +
+                  '<div>' +
+                    '<span class="font-bold text-stone-900">' + c.id + ' • ' + c.category + ' (' + c.rating + ' ★)</span>' +
+                    '<span class="block text-[11px] text-stone-500">' + c.student + ' • ' + c.caterer + ' • ' + c.date + '</span>' +
+                  '</div>' +
+                  '<span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ' + (c.status === 'Resolved' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800') + '">' + c.status + '</span>' +
+                '</div>' +
+                '<p class="text-xs text-stone-800">' + c.message + '</p>' +
+                '<div class="flex flex-col sm:flex-row gap-2 pt-1">' +
+                  '<input type="text" id="reply-input-' + c.id + '" value="' + (c.reply || 'Hot-case refill schedule updated with kitchen supervisor.') + '" placeholder="Write official caterer action taken..." class="flex-1 bg-white border border-stone-300 rounded-xl px-3 py-1.5 text-xs" />' +
+                  '<button type="button" data-resolve-ticket="' + c.id + '" class="px-4 py-1.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-amber-400 font-bold text-xs shrink-0">Post Reply &amp; Resolve</button>' +
+                '</div>' +
+              '</div>'
+            );
+          }).join('');
+        }
+      }
+
+      // ==========================================
+      // CATERER CONSOLE RENDERERS
+      // ==========================================
+      function renderCatererConsole() {
+        const cat = state.caterers[state.loggedCaterer] || state.caterers.ground;
+        document.getElementById('cat-banner-floor').textContent = cat.floor;
+        document.getElementById('cat-banner-fssai').textContent = 'FSSAI Lic: ' + cat.fssai;
+        document.getElementById('cat-banner-name').textContent = cat.name + ' — Operations Console';
+        document.getElementById('cat-banner-meta').textContent = 'Proprietor: ' + cat.proprietor + ' • Contact: ' + cat.phone + ' • Specialty: ' + cat.specialty;
+        document.getElementById('cat-kpi-subscribers').textContent = cat.subscribers + ' Students';
+        document.getElementById('cat-kpi-headcount').textContent = cat.expectedNextMeal + ' Plates';
+
+        const pendingLeaves = state.leaves.filter(function (l) { return l.status === 'Pending'; }).length;
+        const openComplaints = state.complaints.filter(function (c) { return c.status === 'Open'; }).length;
+        document.getElementById('cat-kpi-leaves').textContent = pendingLeaves + ' Pending';
+        document.getElementById('cat-kpi-complaints').textContent = openComplaints + ' Open';
+
+        const nonVegCount = Math.round(cat.expectedNextMeal * cat.nonVegRatio);
+        const vegCount = cat.expectedNextMeal - nonVegCount;
+        document.getElementById('cat-prep-nonveg').textContent = nonVegCount + ' Plates (' + Math.round(cat.nonVegRatio * 100) + '%)';
+        document.getElementById('cat-prep-veg').textContent = vegCount + ' Plates (' + (100 - Math.round(cat.nonVegRatio * 100)) + '%)';
+
+        // Caterer Menu Editor Table
+        const menuBody = document.getElementById('cat-menu-editor-body');
+        if (menuBody) {
+          menuBody.innerHTML = cat.menu.map(function (m) {
+            return (
+              '<tr class="hover:bg-stone-50 align-top">' +
+                '<td class="py-3 px-4 font-extrabold text-stone-900">' + m.day + '</td>' +
+                '<td class="py-3 px-4 text-stone-700">' + m.breakfast.items + '<div class="text-[11px] font-bold text-stone-500 mt-1">' + m.breakfast.kcal + ' kcal • ' + m.breakfast.protein + 'g Protein</div></td>' +
+                '<td class="py-3 px-4 text-stone-700">' + m.lunch.items + '<div class="text-[11px] font-bold text-emerald-700 mt-1">' + m.lunch.kcal + ' kcal • ' + m.lunch.protein + 'g Protein</div></td>' +
+                '<td class="py-3 px-4 text-stone-700">' + m.dinner.items + '<div class="text-[11px] font-bold text-amber-800 mt-1">' + m.dinner.kcal + ' kcal • ' + m.dinner.protein + 'g Protein</div></td>' +
+                '<td class="py-3 px-4 text-right">' +
+                  '<button type="button" data-cat-edit-day="' + m.day + '" class="px-3 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-950 font-bold text-xs transition">Edit Day &amp; Nutrition</button>' +
+                '</td>' +
+              '</tr>'
+            );
+          }).join('');
+        }
+      }
+
+      function renderCatererCharts() {
+        const c1 = document.getElementById('catAttendanceChart');
+        const c2 = document.getElementById('catQualityChart');
+        if (!c1 || !c2 || typeof Chart === 'undefined') return;
+
+        if (catAttChart) catAttChart.destroy();
+        catAttChart = new Chart(c1.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [
+              {
+                label: 'P. Siva Prasad (Ground)',
+                data: state.caterers.ground.weeklyTurnout,
+                backgroundColor: '#ea580c',
+                borderRadius: 6
+              },
+              {
+                label: 'Swain Caterer (First)',
+                data: state.caterers.first.weeklyTurnout,
+                backgroundColor: '#292524',
+                borderRadius: 6
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } } }
+          }
+        });
+
+        if (catQualChart) catQualChart.destroy();
+        catQualChart = new Chart(c2.getContext('2d'), {
+          type: 'radar',
+          data: {
+            labels: ['Breakfast', 'Lunch', 'Dinner', 'Hygiene', 'Roti Freshness'],
+            datasets: [
+              {
+                label: state.caterers.ground.name,
+                data: state.caterers.ground.qualityScores,
+                backgroundColor: 'rgba(234, 88, 12, 0.2)',
+                borderColor: '#ea580c',
+                pointBackgroundColor: '#ea580c'
+              },
+              {
+                label: state.caterers.first.name,
+                data: state.caterers.first.qualityScores,
+                backgroundColor: 'rgba(5, 150, 105, 0.2)',
+                borderColor: '#059669',
+                pointBackgroundColor: '#059669'
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { r: { min: 1, max: 5, ticks: { stepSize: 1 } } },
+            plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } } }
+          }
+        });
+      }
+
+      function renderAll() {
+        syncPortalModeUI();
+        renderStudentHeaderAndCatererBar();
+        renderNoticeBoard();
+        renderStudentTodayAndMacros();
+        renderStudentWeeklyMenu();
+        renderStudentCouponsList();
+        renderFinanceAndLeaves();
+        renderComplaintsAndFeedback();
+        renderCatererConsole();
+      }
+
+      // ==========================================
+      // NAVIGATION & EVENT HANDLERS
+      // ==========================================
+      function switchStudentTab(tab) {
+        document.querySelectorAll('.st-view').forEach(function (v) { v.classList.add('hidden'); });
+        const target = document.getElementById('st-view-' + tab);
+        if (target) target.classList.remove('hidden');
+
+        document.querySelectorAll('#student-desktop-nav .st-nav-btn').forEach(function (b) {
+          if (b.getAttribute('data-st-tab') === tab) {
+            b.className = 'st-nav-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition whitespace-nowrap bg-orange-600 text-white';
+          } else {
+            b.className = 'st-nav-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition whitespace-nowrap text-stone-300 hover:text-white hover:bg-stone-800';
+          }
+        });
+
+        document.querySelectorAll('#student-mobile-nav .st-nav-btn').forEach(function (b) {
+          if (b.getAttribute('data-st-tab') === tab) {
+            b.className = 'st-nav-btn flex flex-col items-center py-1 rounded-lg text-orange-400 font-bold';
+          } else {
+            b.className = 'st-nav-btn flex flex-col items-center py-1 rounded-lg text-stone-400';
+          }
+        });
+      }
+
+      function switchCatererTab(tab) {
+        document.querySelectorAll('.cat-view').forEach(function (v) { v.classList.add('hidden'); });
+        const target = document.getElementById('cat-view-' + tab);
+        if (target) target.classList.remove('hidden');
+
+        document.querySelectorAll('#caterer-desktop-nav .cat-nav-btn').forEach(function (b) {
+          if (b.getAttribute('data-cat-tab') === tab) {
+            b.className = 'cat-nav-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition whitespace-nowrap bg-amber-500 text-stone-950';
+          } else {
+            b.className = 'cat-nav-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition whitespace-nowrap text-stone-300 hover:text-white hover:bg-stone-800';
+          }
+        });
+
+        document.querySelectorAll('#caterer-mobile-nav .cat-nav-btn').forEach(function (b) {
+          if (b.getAttribute('data-cat-tab') === tab) {
+            b.className = 'cat-nav-btn flex flex-col items-center py-1 rounded-lg text-amber-400 font-bold';
+          } else {
+            b.className = 'cat-nav-btn flex flex-col items-center py-1 rounded-lg text-stone-400';
+          }
+        });
+
+        if (tab === 'ops') {
+          setTimeout(renderCatererCharts, 50);
+        }
+      }
+
+      window.addEventListener('DOMContentLoaded', function () {
+        if (typeof lucide !== 'undefined' && lucide.createIcons) {
+          lucide.createIcons();
+        }
+
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const todayName = days[new Date().getDay()] || 'Monday';
+        document.getElementById('st-home-day-select').value = todayName;
+
+        initStudentCouponMatrix();
+        renderAll();
+
+        // Student & Caterer Navigation
+        document.querySelectorAll('.st-nav-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            switchStudentTab(btn.getAttribute('data-st-tab'));
+          });
+        });
+
+        document.querySelectorAll('.cat-nav-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            switchCatererTab(btn.getAttribute('data-cat-tab'));
+          });
+        });
+
+        // Student Caterer Switcher
+        document.getElementById('st-select-ground').addEventListener('click', function () {
+          state.studentSelectedCaterer = 'ground';
+          saveState();
+          renderAll();
+          showToast('Viewing Ground Floor: P. Siva Prasad Caterer');
+        });
+
+        document.getElementById('st-select-first').addEventListener('click', function () {
+          state.studentSelectedCaterer = 'first';
+          saveState();
+          renderAll();
+          showToast('Viewing First Floor: Swain Caterer');
+        });
+
+        // Caterer Console Account Switcher
+        document.getElementById('caterer-account-select').addEventListener('change', function (e) {
+          state.loggedCaterer = e.target.value;
+          saveState();
+          renderAll();
+          showToast('Switched Kitchen Console to ' + state.caterers[state.loggedCaterer].name);
+        });
+
+        // Day Select on Student Home
+        document.getElementById('st-home-day-select').addEventListener('change', renderStudentTodayAndMacros);
+
+        // Reset Macros
+        document.getElementById('btn-reset-macros').addEventListener('click', function () {
+          state.loggedMealsToday = { breakfast: false, lunch: false, dinner: false };
+          saveState();
+          renderStudentTodayAndMacros();
+          showToast('Reset daily nutrition intake log.');
+        });
+
+        // Menu Search & Diet Filter
+        document.getElementById('st-menu-search').addEventListener('input', renderStudentWeeklyMenu);
+        document.getElementById('st-menu-diet').addEventListener('change', renderStudentWeeklyMenu);
+
+        // Coupon Matrix & Presets
+        document.getElementById('st-coupon-matrix').addEventListener('change', recalcCouponSelection);
+        document.getElementById('preset-all-21').addEventListener('click', function () {
+          document.querySelectorAll('.st-meal-cb').forEach(function (cb) { cb.checked = true; });
+          recalcCouponSelection();
+        });
+        document.getElementById('preset-weekdays').addEventListener('click', function () {
+          document.querySelectorAll('.st-meal-cb').forEach(function (cb) {
+            const d = cb.getAttribute('data-day');
+            cb.checked = (d !== 'Saturday' && d !== 'Sunday');
+          });
+          recalcCouponSelection();
+        });
+        document.getElementById('preset-lunch-dinner').addEventListener('click', function () {
+          document.querySelectorAll('.st-meal-cb').forEach(function (cb) {
+            cb.checked = (cb.getAttribute('data-slot') !== 'B');
+          });
+          recalcCouponSelection();
+        });
+
+        // Purchase Coupon Submit
+        document.getElementById('st-coupon-form').addEventListener('submit', function (e) {
+          e.preventDefault();
+          const summary = recalcCouponSelection();
+          if (summary.count === 0) {
+            showToast('Select at least 1 meal to generate a pass.', 'error');
+            return;
+          }
+          const payMode = document.getElementById('cpn-payment-mode').value;
+          if (payMode === 'wallet') {
+            if (state.walletBalance < summary.cost) {
+              showToast('Insufficient Wallet Balance (₹' + state.walletBalance + '). Top up or choose Semester Dues.', 'error');
+              return;
+            }
+            state.walletBalance -= summary.cost;
+          } else {
+            state.pendingDues += summary.cost;
+          }
+
+          const catId = document.getElementById('cpn-caterer').value;
+          const catObj = state.caterers[catId];
+          const newCoupon = {
+            id: 'CPN-' + Math.floor(1000 + Math.random() * 9000),
+            studentId: state.currentStudent.id,
+            studentName: state.currentStudent.name,
+            catererId: catId,
+            catererName: catObj.name + ' (' + catObj.floor + ')',
+            diet: document.getElementById('cpn-diet').value,
+            mealCount: summary.count,
+            totalCost: summary.cost,
+            paymentMode: payMode === 'wallet' ? 'Prepaid Wallet' : 'Added to Dues',
+            timestamp: 'Just now'
+          };
+          state.coupons.unshift(newCoupon);
+          state.transactions.unshift({
+            id: 'TXN-' + Math.floor(910 + Math.random() * 90),
+            title: 'Coupon Pack (' + newCoupon.id + ' - ' + summary.count + ' meals)',
+            amount: -summary.cost,
+            mode: newCoupon.paymentMode,
+            date: 'Today'
+          });
+          saveState();
+          renderAll();
+          showToast('Issued Digital Mess Pass ' + newCoupon.id + '!');
+        });
+
+        // Submit Leave & Rebate Claim
+        document.getElementById('st-leave-form').addEventListener('submit', function (e) {
+          e.preventDefault();
+          const s = document.getElementById('leave-start').value;
+          const end = document.getElementById('leave-end').value;
+          const daysDiff = Math.max(1, Math.round((new Date(end) - new Date(s)) / (1000 * 60 * 60 * 24)) + 1);
+          if (daysDiff < 3) {
+            showToast('Minimum 3 consecutive days required for mess rebate.', 'error');
+            return;
+          }
+          const rebateAmt = daysDiff * 115;
+          const claim = {
+            id: 'LVE-' + Math.floor(310 + Math.random() * 600),
+            student: state.currentStudent.id + ' — ' + state.currentStudent.name,
+            caterer: document.getElementById('leave-caterer').value,
+            startDate: s,
+            endDate: end,
+            days: daysDiff,
+            amount: rebateAmt,
+            reason: document.getElementById('leave-reason').value.trim(),
+            status: 'Pending'
+          };
+          state.leaves.unshift(claim);
+          saveState();
+          renderAll();
+          showToast('Leave claim ' + claim.id + ' submitted for ₹' + rebateAmt + ' refund.');
+        });
+
+        // Submit Feedback / Complaint
+        document.getElementById('st-feedback-form').addEventListener('submit', function (e) {
+          e.preventDefault();
+          const subType = document.getElementById('fb-type').value;
+          const rating = Number(document.getElementById('fb-rating-select').value || 4);
+          const item = {
+            id: 'TKT-' + Math.floor(415 + Math.random() * 500),
+            type: subType,
+            student: state.currentStudent.id + ' — ' + state.currentStudent.name,
+            caterer: document.getElementById('fb-caterer-select').value,
+            category: document.getElementById('fb-category').value,
+            rating: rating,
+            message: document.getElementById('fb-message').value.trim(),
+            status: subType === 'Complaint' ? 'Open' : 'Reviewed',
+            reply: '',
+            date: 'Today'
+          };
+          state.complaints.unshift(item);
+          document.getElementById('fb-message').value = '';
+          saveState();
+          renderAll();
+          showToast(subType + ' ' + item.id + ' logged with Mess Committee.');
+        });
+
+        document.getElementById('st-fb-filter').addEventListener('change', renderComplaintsAndFeedback);
+
+        // Caterer Token Scanner
+        document.getElementById('cat-scanner-form').addEventListener('submit', function (e) {
+          e.preventDefault();
+          const code = document.getElementById('cat-scan-input').value.trim().toUpperCase();
+          const found = state.coupons.find(function (c) { return c.id.toUpperCase() === code; });
+          const resBox = document.getElementById('cat-scan-result');
+          if (!found) {
+            resBox.className = 'p-4 rounded-xl bg-rose-50 border border-rose-200 text-xs space-y-1 text-rose-900';
+            resBox.innerHTML = '<strong>Invalid Token (' + code + ')</strong><p>No active weekly coupon pass matched this ID.</p>';
+            showToast('Coupon token not found!', 'error');
+            return;
+          }
+          if (found.mealCount <= 0) {
+            resBox.className = 'p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs space-y-1 text-amber-900';
+            resBox.innerHTML = '<strong>Zero Meals Remaining (' + found.id + ')</strong><p>Student must renew their weekly pass.</p>';
+            return;
+          }
+          found.mealCount -= 1;
+          state.caterers[state.loggedCaterer].expectedNextMeal += 1;
+          saveState();
+          renderAll();
+          resBox.className = 'p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-xs space-y-1 text-emerald-950';
+          resBox.innerHTML =
+            '<div class="flex justify-between font-bold"><span>✓ Verified: ' + found.studentName + ' (' + found.studentId + ')</span><span>' + found.diet + '</span></div>' +
+            '<p>1 Meal Redeemed • Remaining Balance: <strong>' + found.mealCount + ' meals</strong></p>';
+          showToast('Punched 1 meal for ' + found.studentName + ' (' + found.id + ')');
+        });
+
+        // Caterer Publish Notice
+        document.getElementById('cat-notice-form').addEventListener('submit', function (e) {
+          e.preventDefault();
+          const cat = state.caterers[state.loggedCaterer];
+          const newNotice = {
+            id: 'NOT-' + Math.floor(10 + Math.random() * 90),
+            caterer: cat.name + ' (' + cat.floor + ')',
+            tag: document.getElementById('notice-tag').value,
+            title: document.getElementById('notice-title').value.trim(),
+            body: document.getElementById('notice-body').value.trim(),
+            date: 'Just now'
+          };
+          state.notices.unshift(newNotice);
+          saveState();
+          renderAll();
+          showToast('Published notice to Student Notice Board!');
+        });
+
+        // Delegated Clicks (Macro toggles, Notice delete, Leave Approve/Reject, Ticket Resolve, Menu Edit)
+        document.body.addEventListener('click', function (e) {
+          const macroBtn = e.target.closest('[data-toggle-macro]');
+          if (macroBtn) {
+            const slot = macroBtn.getAttribute('data-toggle-macro');
+            state.loggedMealsToday[slot] = !state.loggedMealsToday[slot];
+            saveState();
+            renderStudentTodayAndMacros();
+            return;
+          }
+
+          const delNotice = e.target.closest('[data-delete-notice]');
+          if (delNotice) {
+            const id = delNotice.getAttribute('data-delete-notice');
+            state.notices = state.notices.filter(function (n) { return n.id !== id; });
+            saveState();
+            renderNoticeBoard();
+            showToast('Removed notice from board.');
+            return;
+          }
+
+          const leaveBtn = e.target.closest('[data-leave-action]');
+          if (leaveBtn) {
+            const action = leaveBtn.getAttribute('data-leave-action');
+            const id = leaveBtn.getAttribute('data-leave-id');
+            const rec = state.leaves.find(function (l) { return l.id === id; });
+            if (rec && rec.status === 'Pending') {
+              if (action === 'approve') {
+                rec.status = 'Approved';
+                state.walletBalance += Number(rec.amount || 0);
+                state.transactions.unshift({
+                  id: 'TXN-' + Math.floor(910 + Math.random() * 90),
+                  title: 'Mess Leave Rebate Credited (' + rec.id + ')',
+                  amount: rec.amount,
+                  mode: 'Rebate Refund',
+                  date: 'Today'
+                });
+                showToast('Approved ' + rec.id + ' & refunded ₹' + rec.amount + ' to student wallet!');
+              } else {
+                rec.status = 'Rejected';
+                showToast('Rejected leave request ' + rec.id, 'error');
+              }
+              saveState();
+              renderAll();
+            }
+            return;
+          }
+
+          const resolveBtn = e.target.closest('[data-resolve-ticket]');
+          if (resolveBtn) {
+            const id = resolveBtn.getAttribute('data-resolve-ticket');
+            const tkt = state.complaints.find(function (c) { return c.id === id; });
+            const input = document.getElementById('reply-input-' + id);
+            if (tkt && input) {
+              tkt.reply = input.value.trim();
+              tkt.status = 'Resolved';
+              saveState();
+              renderAll();
+              showToast('Ticket ' + id + ' marked Resolved with reply!');
+            }
+            return;
+          }
+
+          const editDayBtn = e.target.closest('[data-cat-edit-day]');
+          if (editDayBtn) {
+            const day = editDayBtn.getAttribute('data-cat-edit-day');
+            const cat = state.caterers[state.loggedCaterer];
+            const rec = cat.menu.find(function (m) { return m.day === day; });
+            if (rec) {
+              document.getElementById('edit-modal-title').textContent = 'Edit ' + cat.name + ' Menu — ' + day;
+              document.getElementById('edit-menu-day').value = day;
+              document.getElementById('edit-bf-items').value = rec.breakfast.items;
+              document.getElementById('edit-bf-kcal').value = rec.breakfast.kcal;
+              document.getElementById('edit-bf-protein').value = rec.breakfast.protein;
+              document.getElementById('edit-lu-items').value = rec.lunch.items;
+              document.getElementById('edit-lu-kcal').value = rec.lunch.kcal;
+              document.getElementById('edit-lu-protein').value = rec.lunch.protein;
+              document.getElementById('edit-di-items').value = rec.dinner.items;
+              document.getElementById('edit-di-kcal').value = rec.dinner.kcal;
+              document.getElementById('edit-di-protein').value = rec.dinner.protein;
+              const m = document.getElementById('modal-edit-menu');
+              m.classList.remove('hidden');
+              m.classList.add('flex');
+            }
+          }
+        });
+
+        // Close / Save Menu Edit Modal
+        const closeEdit = function () {
+          const m = document.getElementById('modal-edit-menu');
+          m.classList.add('hidden');
+          m.classList.remove('flex');
+        };
+        document.getElementById('btn-close-edit-modal').addEventListener('click', closeEdit);
+        document.getElementById('btn-cancel-edit-modal').addEventListener('click', closeEdit);
+        document.getElementById('form-edit-menu').addEventListener('submit', function (e) {
+          e.preventDefault();
+          const day = document.getElementById('edit-menu-day').value;
+          const cat = state.caterers[state.loggedCaterer];
+          const rec = cat.menu.find(function (m) { return m.day === day; });
+          if (rec) {
+            rec.breakfast.items = document.getElementById('edit-bf-items').value.trim();
+            rec.breakfast.kcal = Number(document.getElementById('edit-bf-kcal').value || 550);
+            rec.breakfast.protein = Number(document.getElementById('edit-bf-protein').value || 15);
+            rec.lunch.items = document.getElementById('edit-lu-items').value.trim();
+            rec.lunch.kcal = Number(document.getElementById('edit-lu-kcal').value || 780);
+            rec.lunch.protein = Number(document.getElementById('edit-lu-protein').value || 25);
+            rec.dinner.items = document.getElementById('edit-di-items').value.trim();
+            rec.dinner.kcal = Number(document.getElementById('edit-di-kcal').value || 800);
+            rec.dinner.protein = Number(document.getElementById('edit-di-protein').value || 28);
+            saveState();
+            renderAll();
+            closeEdit();
+            showToast('Updated ' + day + ' menu & nutritional macros!');
+          }
+        });
+
+        // Auth / Dual Login Modal
+        const authModal = document.getElementById('modal-auth');
+        const tabSt = document.getElementById('auth-tab-student');
+        const tabCat = document.getElementById('auth-tab-caterer');
+        const formSt = document.getElementById('form-login-student');
+        const formCat = document.getElementById('form-login-caterer');
+
+        document.getElementById('btn-open-auth').addEventListener('click', function () {
+          authModal.classList.remove('hidden');
+          authModal.classList.add('flex');
+        });
+        document.getElementById('btn-close-auth').addEventListener('click', function () {
+          authModal.classList.add('hidden');
+          authModal.classList.remove('flex');
+        });
+
+        tabSt.addEventListener('click', function () {
+          tabSt.className = 'py-2 rounded-xl text-xs font-bold bg-orange-600 text-white shadow-sm transition';
+          tabCat.className = 'py-2 rounded-xl text-xs font-bold text-stone-600 hover:text-stone-900 transition';
+          formSt.classList.remove('hidden');
+          formCat.classList.add('hidden');
+        });
+
+        tabCat.addEventListener('click', function () {
+          tabCat.className = 'py-2 rounded-xl text-xs font-bold bg-stone-900 text-amber-400 shadow-sm transition';
+          tabSt.className = 'py-2 rounded-xl text-xs font-bold text-stone-600 hover:text-stone-900 transition';
+          formCat.classList.remove('hidden');
+          formSt.classList.add('hidden');
+        });
+
+        formSt.addEventListener('submit', function (e) {
+          e.preventDefault();
+          const parts = document.getElementById('login-student-preset').value.split('|');
+          state.currentStudent = { id: parts[0], name: parts[1], hostel: parts[2] };
+          state.portalMode = 'student';
+          saveState();
+          renderAll();
+          authModal.classList.add('hidden');
+          authModal.classList.remove('flex');
+          showToast('Signed in as Student: ' + state.currentStudent.name);
+        });
+
+        formCat.addEventListener('submit', function (e) {
+          e.preventDefault();
+          const vendorKey = document.getElementById('login-caterer-vendor').value;
+          state.loggedCaterer = vendorKey;
+          state.portalMode = 'caterer';
+          saveState();
+          renderAll();
+          authModal.classList.add('hidden');
+          authModal.classList.remove('flex');
+          showToast('Signed in to ' + state.caterers[vendorKey].name + ' Console!');
+        });
+
+        // Payment & Dues Modal
+        const payModal = document.getElementById('modal-payment');
+        const openPayModal = function (purpose, defaultAmt) {
+          document.getElementById('pay-target').value = purpose;
+          document.getElementById('pay-amount').value = defaultAmt;
+          payModal.classList.remove('hidden');
+          payModal.classList.add('flex');
+        };
+        document.getElementById('btn-header-pay').addEventListener('click', function () {
+          openPayModal('topup', 1000);
+        });
+        document.getElementById('btn-fin-topup').addEventListener('click', function () {
+          openPayModal('topup', 1000);
+        });
+        document.getElementById('btn-fin-pay-dues').addEventListener('click', function () {
+          openPayModal('dues', state.pendingDues > 0 ? state.pendingDues : 500);
+        });
+        document.getElementById('btn-close-payment').addEventListener('click', function () {
+          payModal.classList.add('hidden');
+          payModal.classList.remove('flex');
+        });
+        document.getElementById('form-payment').addEventListener('submit', function (e) {
+          e.preventDefault();
+          const target = document.getElementById('pay-target').value;
+          const method = document.getElementById('pay-method').value;
+          const amt = Number(document.getElementById('pay-amount').value || 0);
+          if (amt <= 0) return;
+
+          if (target === 'topup') {
+            state.walletBalance += amt;
+            state.transactions.unshift({
+              id: 'TXN-' + Math.floor(910 + Math.random() * 90),
+              title: 'Prepaid Mess Wallet Top-Up',
+              amount: amt,
+              mode: method,
+              date: 'Today'
+            });
+            showToast('Added ₹' + amt + ' to your Mess Wallet!');
+          } else {
+            const paid = Math.min(state.pendingDues, amt);
+            state.pendingDues = Math.max(0, state.pendingDues - amt);
+            if (amt > paid) {
+              state.walletBalance += (amt - paid);
+            }
+            state.transactions.unshift({
+              id: 'TXN-' + Math.floor(910 + Math.random() * 90),
+              title: 'Semester Mess Dues Settlement',
+              amount: -paid,
+              mode: method,
+              date: 'Today'
+            });
+            showToast('Paid ₹' + paid + ' towards Semester Mess Dues!');
+          }
+          saveState();
+          renderAll();
+          payModal.classList.add('hidden');
+          payModal.classList.remove('flex');
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

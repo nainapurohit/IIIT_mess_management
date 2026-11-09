@@ -1,0 +1,582 @@
+{
+  "portalMode": "caterer",
+  "currentStudent": {
+    "id": "B123045",
+    "name": "Aarav Mohanty",
+    "hostel": "Hostel-1, Floor 4, Room 412"
+  },
+  "walletBalance": 1450,
+  "pendingDues": 3200,
+  "studentSelectedCaterer": "first",
+  "loggedCaterer": "ground",
+  "loggedMealsToday": {
+    "breakfast": false,
+    "lunch": false,
+    "dinner": false
+  },
+  "caterers": {
+    "ground": {
+      "id": "ground",
+      "name": "P. Siva Prasad Caterer",
+      "proprietor": "P. Siva Prasad",
+      "floor": "Ground Floor Mess",
+      "phone": "9078210647",
+      "fssai": "22024011000412",
+      "specialty": "South Indian & Odia Authentics",
+      "subscribers": 640,
+      "expectedNextMeal": 425,
+      "nonVegRatio": 0.66,
+      "weeklyTurnout": [
+        420,
+        405,
+        435,
+        415,
+        440,
+        390,
+        455
+      ],
+      "qualityScores": [
+        4.5,
+        4.3,
+        4.4,
+        4.4,
+        4.2
+      ],
+      "menu": [
+        {
+          "day": "Monday",
+          "breakfast": {
+            "items": "Aloo Paratha with Fresh Curd, Banana / Boiled Egg, Sprouts, Tea/Coffee",
+            "kcal": 580,
+            "protein": 16,
+            "carbs": 78,
+            "fat": 19,
+            "fiber": 7
+          },
+          "lunch": {
+            "items": "Steamed Rice, Phulka Roti, Dal Fry, Rajma Masala / Egg Curry, Mix Veg, Curd, Papad",
+            "kcal": 790,
+            "protein": 24,
+            "carbs": 108,
+            "fat": 24,
+            "fiber": 11
+          },
+          "dinner": {
+            "items": "Steamed Rice, Chapathi, Chana Masala, Paneer Butter Masala / Homestyle Chicken Curry, Salad",
+            "kcal": 820,
+            "protein": 31,
+            "carbs": 96,
+            "fat": 28,
+            "fiber": 9
+          }
+        },
+        {
+          "day": "Tuesday",
+          "breakfast": {
+            "items": "Odisha Special Bara Ghuguni & Rava Upma, Coconut Chutney, Banana, Tea/Coffee",
+            "kcal": 540,
+            "protein": 15,
+            "carbs": 82,
+            "fat": 16,
+            "fiber": 8
+          },
+          "lunch": {
+            "items": "Jeera Rice, Roti, Masoor Dal, Aloo Gobi Masala, Curd Rice, Fryums, Green Salad",
+            "kcal": 740,
+            "protein": 19,
+            "carbs": 112,
+            "fat": 21,
+            "fiber": 10
+          },
+          "dinner": {
+            "items": "Steamed Rice, Roti, Tadka Dal, Veg Manchurian / Odia Egg Masala, Cucumber Salad, Semiya Payasam",
+            "kcal": 780,
+            "protein": 23,
+            "carbs": 102,
+            "fat": 25,
+            "fiber": 8
+          }
+        },
+        {
+          "day": "Wednesday",
+          "breakfast": {
+            "items": "Kanda Poha, Crispy Medu Wada, Sambar, Omelette / Banana, Bread Butter Jam, Coffee",
+            "kcal": 560,
+            "protein": 17,
+            "carbs": 76,
+            "fat": 18,
+            "fiber": 6
+          },
+          "lunch": {
+            "items": "Steamed Rice, Roti, Sambar, Matar Paneer / Odia Chicken Kosha, Cabbage Thoran, Curd",
+            "kcal": 830,
+            "protein": 32,
+            "carbs": 104,
+            "fat": 27,
+            "fiber": 9
+          },
+          "dinner": {
+            "items": "Kashmiri Pulao, Masala Chapathi, Kadai Paneer / Butter Chicken, Boondi Raita, Ice Cream",
+            "kcal": 860,
+            "protein": 34,
+            "carbs": 98,
+            "fat": 31,
+            "fiber": 7
+          }
+        },
+        {
+          "day": "Thursday",
+          "breakfast": {
+            "items": "Cuttack Style Dahi Bara Aloo Dum / Steamed Idli Wada, Sambar & White Chutney, Tea",
+            "kcal": 520,
+            "protein": 14,
+            "carbs": 80,
+            "fat": 15,
+            "fiber": 7
+          },
+          "lunch": {
+            "items": "Steamed Rice, Roti, Moong Dal, Amritsari Chole, Crispy Bhindi Fry, Curd, Lemon Pickle",
+            "kcal": 750,
+            "protein": 21,
+            "carbs": 110,
+            "fat": 20,
+            "fiber": 12
+          },
+          "dinner": {
+            "items": "Steamed Rice, Roti, Dal Makhani, Mushroom Masala / Rohu Fish Besara, Onion Salad, Gulab Jamun",
+            "kcal": 810,
+            "protein": 29,
+            "carbs": 100,
+            "fat": 26,
+            "fiber": 8
+          }
+        },
+        {
+          "day": "Friday",
+          "breakfast": {
+            "items": "Crispy Rava Dosa / Onion Uttapam, Groundnut & Tomato Chutney, Sambar, Boiled Egg / Banana",
+            "kcal": 550,
+            "protein": 16,
+            "carbs": 79,
+            "fat": 17,
+            "fiber": 6
+          },
+          "lunch": {
+            "items": "Steamed Rice, Roti, Arhar Dal, Palak Paneer / Chicken Gravy, Aloo Peas Dry, Curd",
+            "kcal": 800,
+            "protein": 30,
+            "carbs": 102,
+            "fat": 25,
+            "fiber": 10
+          },
+          "dinner": {
+            "items": "Veg Schezwan Fried Rice, Chapathi, Gobi Manchurian / Chilli Chicken, Sweet Corn Soup, Fruit Custard",
+            "kcal": 840,
+            "protein": 28,
+            "carbs": 106,
+            "fat": 27,
+            "fiber": 8
+          }
+        },
+        {
+          "day": "Saturday",
+          "breakfast": {
+            "items": "Stuffed Bread Pakoda / Methi Poori & Aloo Masala, Tomato Ketchup, Masala Chai",
+            "kcal": 610,
+            "protein": 14,
+            "carbs": 84,
+            "fat": 23,
+            "fiber": 6
+          },
+          "lunch": {
+            "items": "Steamed Rice, Roti, Panchmel Dal, Soyabean Meal Maker Curry, Smoked Baingan Bharta, Curd Rice",
+            "kcal": 760,
+            "protein": 25,
+            "carbs": 106,
+            "fat": 21,
+            "fiber": 11
+          },
+          "dinner": {
+            "items": "Lachha Paratha, Steamed Rice, Dal Fry, Malai Kofta /Masala Egg Bhurji, Salad, Warm Odia Rasagola",
+            "kcal": 830,
+            "protein": 26,
+            "carbs": 101,
+            "fat": 28,
+            "fiber": 8
+          }
+        },
+        {
+          "day": "Sunday",
+          "breakfast": {
+            "items": "Vegetable Masala Maggi, Double Omelette / Sweet Corn Bowl, Toasted Wheat Bread, Coffee",
+            "kcal": 570,
+            "protein": 18,
+            "carbs": 74,
+            "fat": 20,
+            "fiber": 5
+          },
+          "lunch": {
+            "items": "Hyderabadi Chicken Dum Biryani / Subz Paneer Biryani, Mirchi Salan, Onion Raita, Papad",
+            "kcal": 890,
+            "protein": 35,
+            "carbs": 110,
+            "fat": 30,
+            "fiber": 8
+          },
+          "dinner": {
+            "items": "Steamed Rice, Soft Phulka, Yellow Dal Tadka, Aloo Matar Gravy, Seasonal Veg, Curd, Rice Kheer",
+            "kcal": 740,
+            "protein": 20,
+            "carbs": 104,
+            "fat": 22,
+            "fiber": 9
+          }
+        }
+      ]
+    },
+    "first": {
+      "id": "first",
+      "name": "Swain Caterer",
+      "proprietor": "R. K. Swain",
+      "floor": "First Floor Mess",
+      "phone": "7787050616",
+      "fssai": "22024011000889",
+      "specialty": "North Indian, Mughlai & Odia Thali Specials",
+      "subscribers": 560,
+      "expectedNextMeal": 380,
+      "nonVegRatio": 0.62,
+      "weeklyTurnout": [
+        375,
+        390,
+        380,
+        400,
+        395,
+        360,
+        415
+      ],
+      "qualityScores": [
+        4.3,
+        4.4,
+        4.2,
+        4.3,
+        4.3
+      ],
+      "menu": [
+        {
+          "day": "Monday",
+          "breakfast": {
+            "items": "Paneer Stuffed Paratha, Boondi Raita, Boiled Egg / Banana, Cornflakes with Milk, Tea",
+            "kcal": 610,
+            "protein": 19,
+            "carbs": 76,
+            "fat": 22,
+            "fiber": 6
+          },
+          "lunch": {
+            "items": "Steamed Rice, Tandoori Roti, Dal Tadka, Kala Chana Ghuguni, Egg Masala / Shahi Paneer, Curd",
+            "kcal": 810,
+            "protein": 27,
+            "carbs": 106,
+            "fat": 25,
+            "fiber": 10
+          },
+          "dinner": {
+            "items": "Jeera Rice, Phulka, Dal Makhani, Chicken Tikka Masala / Kadai Paneer, Green Salad, Moong Dal Halwa",
+            "kcal": 850,
+            "protein": 33,
+            "carbs": 98,
+            "fat": 29,
+            "fiber": 8
+          }
+        },
+        {
+          "day": "Tuesday",
+          "breakfast": {
+            "items": "Mysore Masala Dosa, Sambar, Roasted Peanut Chutney, Banana, Filter Coffee / Tea",
+            "kcal": 560,
+            "protein": 15,
+            "carbs": 84,
+            "fat": 17,
+            "fiber": 7
+          },
+          "lunch": {
+            "items": "Steamed Rice, Roti, Odia Authentic Dalma, Saga Bhaja, Aloo Bharta, Curd, Roasted Papad",
+            "kcal": 730,
+            "protein": 20,
+            "carbs": 108,
+            "fat": 19,
+            "fiber": 12
+          },
+          "dinner": {
+            "items": "Steamed Rice, Chapathi, Chole Bhature (2 pcs) / Egg Do Pyaza, Pickled Onions, Boondi Ladoo",
+            "kcal": 820,
+            "protein": 24,
+            "carbs": 104,
+            "fat": 27,
+            "fiber": 9
+          }
+        },
+        {
+          "day": "Wednesday",
+          "breakfast": {
+            "items": "Chole Kulche / Vegetable Sandwich, Boiled Egg, Sprouts Salad, Hot Milk / Coffee",
+            "kcal": 580,
+            "protein": 18,
+            "carbs": 79,
+            "fat": 19,
+            "fiber": 7
+          },
+          "lunch": {
+            "items": "Steamed Rice, Roti, Yellow Dal, Methi Malai Matar / Dhaba Chicken Curry, Aloo Jeera, Curd",
+            "kcal": 820,
+            "protein": 31,
+            "carbs": 102,
+            "fat": 26,
+            "fiber": 9
+          },
+          "dinner": {
+            "items": "Peas Pulao, Butter Naan, Paneer Lababdar / Mughlai Chicken Korma, Cucumber Raita, Chocobar",
+            "kcal": 870,
+            "protein": 34,
+            "carbs": 100,
+            "fat": 32,
+            "fiber": 7
+          }
+        },
+        {
+          "day": "Thursday",
+          "breakfast": {
+            "items": "Puri Bhaji, Suji Halwa, Chickpea Sundal, Tea / Coffee",
+            "kcal": 590,
+            "protein": 14,
+            "carbs": 86,
+            "fat": 21,
+            "fiber": 6
+          },
+          "lunch": {
+            "items": "Steamed Rice, Roti, Rajma Chawal Bowl, Lauki Chana Dal, Curd, Papad, GreenChilli Pickle",
+            "kcal": 750,
+            "protein": 22,
+            "carbs": 112,
+            "fat": 19,
+            "fiber": 11
+          },
+          "dinner": {
+            "items": "Steamed Rice, Roti, Dal Fry, Soya Chaap Masala / Mustard Fish Curry, Salad, Rasmalai",
+            "kcal": 800,
+            "protein": 30,
+            "carbs": 96,
+            "fat": 25,
+            "fiber": 8
+          }
+        },
+        {
+          "day": "Friday",
+          "breakfast": {
+            "items": "Gobi Paratha, Curd, Omelette / Banana, Peanut Butter Toast, Tea / Coffee",
+            "kcal": 590,
+            "protein": 18,
+            "carbs": 75,
+            "fat": 21,
+            "fiber": 7
+          },
+          "lunch": {
+            "items": "Steamed Rice, Roti, Toor Dal, Paneer Bhurji / Chicken Pepper Fry, Bhindi Do Pyaza, Curd",
+            "kcal": 810,
+            "protein": 31,
+            "carbs": 100,
+            "fat": 26,
+            "fiber": 9
+          },
+          "dinner": {
+            "items": "Hakka Noodles & Fried Rice, Manchurian Balls / Crispy Honey Chilli Chicken, Manchow Soup",
+            "kcal": 830,
+            "protein": 27,
+            "carbs": 108,
+            "fat": 26,
+            "fiber": 7
+          }
+        },
+        {
+          "day": "Saturday",
+          "breakfast": {
+            "items": "Dahi Bara Aloo Dum, Sev & Onion Garnish, Sweet Curd Cup, Tea / Coffee",
+            "kcal": 530,
+            "protein": 15,
+            "carbs": 80,
+            "fat": 16,
+            "fiber": 7
+          },
+          "lunch": {
+            "items": "Steamed Rice, Roti, Khichdi Special, Beguni, Tomato Khatta, Papad, Curd",
+            "kcal": 740,
+            "protein": 19,
+            "carbs": 110,
+            "fat": 20,
+            "fiber": 10
+          },
+          "dinner": {
+            "items": "Ajwain Paratha, Rice, Tadka Dal, Matar Mushroom / Egg Kassa, Salad, Hot Jalebi",
+            "kcal": 810,
+            "protein": 24,
+            "carbs": 104,
+            "fat": 26,
+            "fiber": 8
+          }
+        },
+        {
+          "day": "Sunday",
+          "breakfast": {
+            "items": "Masala Uttapam & Medu Wada, Sambar, Coconut Chutney, Boiled Egg / Banana, Coffee",
+            "kcal": 560,
+            "protein": 17,
+            "carbs": 78,
+            "fat": 18,
+            "fiber": 7
+          },
+          "lunch": {
+            "items": "Kolkata Style Chicken Biryani (with Aloo & Egg) / Nawabi Veg Biryani, Burhani Raita, Salad",
+            "kcal": 880,
+            "protein": 34,
+            "carbs": 112,
+            "fat": 29,
+            "fiber": 8
+          },
+          "dinner": {
+            "items": "Steamed Rice, Phulka, Dal Fry, Mix Veg Jalfrezi, Aloo Gobi, Curd, Sevaiyan Kheer",
+            "kcal": 730,
+            "protein": 19,
+            "carbs": 102,
+            "fat": 21,
+            "fiber": 9
+          }
+        }
+      ]
+    }
+  },
+  "notices": [
+    {
+      "id": "NOT-1",
+      "caterer": "P. Siva Prasad Caterer (Ground Floor)",
+      "tag": "Special Menu",
+      "title": "Sunday Feast: Hyderabadi Dum Biryani & Paneer Tikka Counter",
+      "body": "Live counter opens at 12:15 PM this Sunday. Extra Boondi Raita and Mirchi Salan included for all coupon holders.",
+      "date": "Nov 10, 2026"
+    },
+    {
+      "id": "NOT-2",
+      "caterer": "Swain Caterer (First Floor)",
+      "tag": "Special Menu",
+      "title": "Thursday Odia Special: Authentic Dalma & Mustard Rohu Fish",
+      "body": "Prepared with pure cow ghee and fresh local produce. Separate pure vegetarian Paneer & Mushroom counter available.",
+      "date": "Nov 09, 2026"
+    },
+    {
+      "id": "NOT-3",
+      "caterer": "Both Campus Messes",
+      "tag": "Hygiene Audit",
+      "title": "Monthly FSSAI & Warden Hygiene Audit Completed (4.4/5 ★)",
+      "body": "Water TDS, RO filters, and fortified rice bran oil batches verified by the IIIT Bhubaneswar Hostel Mess Committee.",
+      "date": "Nov 08, 2026"
+    }
+  ],
+  "coupons": [
+    {
+      "id": "CPN-8841",
+      "studentId": "B123045",
+      "studentName": "Aarav Mohanty",
+      "catererId": "ground",
+      "catererName": "P. Siva Prasad Caterer (Ground Floor)",
+      "diet": "Non-Vegetarian",
+      "mealCount": 21,
+      "totalCost": 1015,
+      "paymentMode": "Prepaid Wallet",
+      "timestamp": "Nov 09, 2026 • 08:15 AM"
+    },
+    {
+      "id": "CPN-8835",
+      "studentId": "B123082",
+      "studentName": "Ananya Das",
+      "catererId": "first",
+      "catererName": "Swain Caterer (First Floor)",
+      "diet": "Pure Vegetarian",
+      "mealCount": 15,
+      "totalCost": 725,
+      "paymentMode": "Semester Dues",
+      "timestamp": "Nov 08, 2026 • 07:45 PM"
+    }
+  ],
+  "leaves": [
+    {
+      "id": "LVE-301",
+      "student": "B123045 — Aarav Mohanty",
+      "caterer": "P. Siva Prasad Caterer (Ground Floor)",
+      "startDate": "2026-11-14",
+      "endDate": "2026-11-18",
+      "days": 5,
+      "amount": 575,
+      "reason": "Home Visit to Cuttack",
+      "status": "Pending"
+    },
+    {
+      "id": "LVE-294",
+      "student": "B123082 — Ananya Das",
+      "caterer": "Swain Caterer (First Floor)",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-04",
+      "days": 4,
+      "amount": 460,
+      "reason": "Inter-IIIT Sports Meet",
+      "status": "Approved"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "TXN-904",
+      "title": "Weekly Mess Coupon Pack (CPN-8841)",
+      "amount": -1015,
+      "mode": "Mess Wallet",
+      "date": "Nov 09, 2026"
+    },
+    {
+      "id": "TXN-901",
+      "title": "Leave Rebate Credited (LVE-294 - 4 Days)",
+      "amount": 460,
+      "mode": "Rebate Refund",
+      "date": "Nov 05, 2026"
+    },
+    {
+      "id": "TXN-889",
+      "title": "Wallet Top-Up via UPI",
+      "amount": 2000,
+      "mode": "UPI Instant",
+      "date": "Nov 01, 2026"
+    }
+  ],
+  "complaints": [
+    {
+      "id": "TKT-409",
+      "type": "Complaint",
+      "student": "B123045 — Aarav Mohanty",
+      "caterer": "P. Siva Prasad Caterer (Ground Floor)",
+      "category": "Chapati / Rice Freshness",
+      "rating": 2,
+      "message": "Rotis served in the 8:30 PM dinner batch were slightly cold; please keep insulated hot-cases refilled until 9:00 PM.",
+      "status": "Open",
+      "reply": "",
+      "date": "Nov 09, 2026"
+    },
+    {
+      "id": "TKT-402",
+      "type": "Feedback",
+      "student": "B123082 — Ananya Das",
+      "caterer": "Swain Caterer (First Floor)",
+      "category": "Food Quality & Taste",
+      "rating": 5,
+      "message": "Tuesday Odia Dalma and Mysore Masala Dosa were super fresh and well-balanced in spice!",
+      "status": "Resolved",
+      "reply": "Thank you Ananya! Our kitchen team appreciates your kind words.",
+      "date": "Nov 08, 2026"
+    }
+  ]
+}
